@@ -2,14 +2,6 @@ namespace Finances.Valuation.Application.Features.Strategies.Models;
 
 internal class StrategyConfiguration
 {
-    private static IReadOnlyDictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>> AssingFunctions = new Dictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>>
-    {
-        { StrategyConfigurationType.Debt, (strategyConfiguration, referenceId) => strategyConfiguration.DebtId = referenceId},
-        { StrategyConfigurationType.Investment, (strategyConfiguration, referenceId) => strategyConfiguration.InvestmentId = referenceId},
-        { StrategyConfigurationType.Saving, (strategyConfiguration, referenceId) => strategyConfiguration.SavingId = referenceId},
-        { StrategyConfigurationType.Spending, (strategyConfiguration, referenceId) => strategyConfiguration.SpendingId = referenceId},
-    };
-
     public int Id { get; set; }
 
     public int StrategyId { get; set; }
@@ -30,6 +22,15 @@ internal class StrategyConfiguration
 
     public int Priority { get; set; }
 
+    private static IReadOnlyDictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>> AssingFunctions = new Dictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>>
+    {
+        { StrategyConfigurationType.Debt, (strategyConfiguration, referenceId) => strategyConfiguration.DebtId = referenceId},
+        { StrategyConfigurationType.Investment, (strategyConfiguration, referenceId) => strategyConfiguration.InvestmentId = referenceId},
+        { StrategyConfigurationType.Saving, (strategyConfiguration, referenceId) => strategyConfiguration.SavingId = referenceId},
+        { StrategyConfigurationType.Spending, (strategyConfiguration, referenceId) => strategyConfiguration.SpendingId = referenceId},
+    };
+
+
     public static StrategyConfiguration Create(int strategyId, StrategyConfigurationType type, int referenceId)
     {
         StrategyConfiguration strategyConfiguration = new StrategyConfiguration
@@ -45,4 +46,7 @@ internal class StrategyConfiguration
 
         return strategyConfiguration;
     }
+
+    public static StrategyConfiguration Create(Strategy strategy, StrategyConfigurationDto itemDto) =>
+        Create(strategy.Id, itemDto.Type, itemDto.ReferenceId);
 }

@@ -1,5 +1,5 @@
-using Finances.Valuation.Application.Features.Debt.Models;
-using Finances.Valuation.Application.Features.Income.Models;
+using Finances.Valuation.Application.Features.Debts.Models;
+using Finances.Valuation.Application.Features.Incomes.Models;
 using Finances.Valuation.Application.Features.Savings.Models;
 using Finances.Valuation.Application.Features.Spendings.Models;
 using Finances.Valuation.Application.Features.Strategies.Models;

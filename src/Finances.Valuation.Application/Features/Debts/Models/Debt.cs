@@ -3,7 +3,7 @@ using Finances.Valuation.Application.Features.Savings.Models;
 
 [assembly: InternalsVisibleTo("Finances.Valuation.Application.Test")]
 
-namespace Finances.Valuation.Application.Features.Debt.Models;
+namespace Finances.Valuation.Application.Features.Debts.Models;
 
 internal class Debt
 {
@@ -11,7 +11,7 @@ internal class Debt
 
     public required string Name { get; set; }
 
-    public DebtTypes DebtType { get; set; }
+    public DebtType DebtType { get; set; }
 
     public decimal Amount { get; set; }
 

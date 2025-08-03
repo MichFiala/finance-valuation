@@ -1,17 +1,18 @@
+using Finances.Valuation.Application.Features.Incomes.Models;
 using Finances.Valuation.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Finances.Valuation.Application.Features.Income;
+namespace Finances.Valuation.Application.Features.Incomes;
 internal class IncomeRepository(IDbContextFactory<AppDbContext> dbContextFactory)
 {
-    public async Task<IReadOnlyCollection<Models.Income>> GetAsync()
+    public async Task<IReadOnlyCollection<Income>> GetAsync()
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
 
         return await context.Incomes.ToListAsync();
     }
 
-    public async Task SaveAsync(Models.Income income)
+    public async Task SaveAsync(Income income)
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
         if (income.Id <= 0)
@@ -27,7 +28,7 @@ internal class IncomeRepository(IDbContextFactory<AppDbContext> dbContextFactory
                      .ExecuteUpdateAsync(s =>
                         s.SetProperty(i => i.Name, i => income.Name)
                          .SetProperty(i => i.Amount, i => income.Amount)
-                         .SetProperty(i => i.Month, i => income.Month)
+                         .SetProperty(i => i.Date, i => income.Date)
                      );
     }
 }

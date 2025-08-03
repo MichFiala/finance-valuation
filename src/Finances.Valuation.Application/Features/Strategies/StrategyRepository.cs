@@ -12,7 +12,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
         return await context.Strategies.ToListAsync();
     }
 
-    public async Task<int> SaveAsync(Models.Strategy strategy)
+    public async Task<Models.Strategy> SaveAsync(Models.Strategy strategy)
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
         if (strategy.Id <= 0)
@@ -20,7 +20,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
             context.Strategies.Add(strategy);
             await context.SaveChangesAsync();
 
-            return strategy.Id;
+            return strategy;
         }
 
         await context.Strategies
@@ -29,7 +29,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
                         s.SetProperty(s => s.Name, s => strategy.Name)
                      );
 
-        return strategy.Id;
+        return strategy;
     }
 
     public async Task SaveAsync(IReadOnlyCollection<Models.StrategyConfiguration> strategyConfigurations)

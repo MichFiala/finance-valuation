@@ -1,4 +1,4 @@
-namespace Finances.Valuation.Application.Features.Income.Models;
+namespace Finances.Valuation.Application.Features.Incomes.Models;
 
 internal class Income
 {

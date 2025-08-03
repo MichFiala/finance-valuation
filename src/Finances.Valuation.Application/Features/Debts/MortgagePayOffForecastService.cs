@@ -1,9 +1,8 @@
-using System.Data.Common;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Finances.Valuation.Application.Test")]
 
-namespace Finances.Valuation.Application.Features.Debt;
+namespace Finances.Valuation.Application.Features.Debts;
 
 internal interface IMortgagePayOffForecastService
 {

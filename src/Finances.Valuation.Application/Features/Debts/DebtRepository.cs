@@ -1,7 +1,7 @@
 using Finances.Valuation.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Finances.Valuation.Application.Features.Debt;
+namespace Finances.Valuation.Application.Features.Debts;
 
 internal class DebtRepository(IDbContextFactory<AppDbContext> dbContextFactory)
 {

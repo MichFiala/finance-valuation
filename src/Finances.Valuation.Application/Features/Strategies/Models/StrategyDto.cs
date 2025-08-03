@@ -4,5 +4,5 @@ public class StrategyDto
 {
     public required string Name { get; set; }    
 
-    public required IReadOnlyCollection<StrategyConfigurationItemDto> StrategyConfigurations { get; set; }
+    public required IReadOnlyCollection<StrategyConfigurationDto> StrategyConfigurations { get; set; }
 }
