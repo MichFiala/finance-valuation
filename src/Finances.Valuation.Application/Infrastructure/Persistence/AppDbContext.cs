@@ -1,5 +1,6 @@
 using Finances.Valuation.Application.Features.Debts.Models;
 using Finances.Valuation.Application.Features.Incomes.Models;
+using Finances.Valuation.Application.Features.Investments.Models;
 using Finances.Valuation.Application.Features.Savings.Models;
 using Finances.Valuation.Application.Features.Spendings.Models;
 using Finances.Valuation.Application.Features.Strategies.Models;
@@ -11,7 +12,7 @@ internal class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
     }
 
     public DbSet<Debt> Debts { get; set; }
@@ -25,6 +26,8 @@ internal class AppDbContext : DbContext
     public DbSet<Strategy> Strategies { get; set; }
 
     public DbSet<StrategyConfiguration> StrategiesConfigurations { get; set; }
+
+    public DbSet<Investment> Investments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -73,6 +76,14 @@ internal class AppDbContext : DbContext
         {
             mb.ToTable("strategies_configurations");
             mb.HasKey(s => s.Id);
+            mb.Property(p => p.Type)
+              .HasConversion<string>();
+        });
+
+        modelBuilder.Entity<Investment>(mb =>
+        {
+            mb.ToTable("investments");
+            mb.HasKey(i => i.Id);
         });
     }
 }

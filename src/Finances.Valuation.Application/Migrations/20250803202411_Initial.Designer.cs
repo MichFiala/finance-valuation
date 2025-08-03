@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Finances.Valuation.Application.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250803170119_Initial")]
+    [Migration("20250803202411_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -22,7 +22,7 @@ namespace Finances.Valuation.Application.Migrations
                 .HasDefaultSchema("fin")
                 .HasAnnotation("ProductVersion", "9.0.7");
 
-            modelBuilder.Entity("Finances.Valuation.Application.Features.Debt.Models.Debt", b =>
+            modelBuilder.Entity("Finances.Valuation.Application.Features.Debts.Models.Debt", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace Finances.Valuation.Application.Migrations
                     b.ToTable("debts", "fin");
                 });
 
-            modelBuilder.Entity("Finances.Valuation.Application.Features.Income.Models.Income", b =>
+            modelBuilder.Entity("Finances.Valuation.Application.Features.Incomes.Models.Income", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -91,7 +91,7 @@ namespace Finances.Valuation.Application.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Investment", "fin");
+                    b.ToTable("investments", "fin");
                 });
 
             modelBuilder.Entity("Finances.Valuation.Application.Features.Savings.Models.Saving", b =>
@@ -198,7 +198,7 @@ namespace Finances.Valuation.Application.Migrations
                     b.ToTable("strategies_configurations", "fin");
                 });
 
-            modelBuilder.Entity("Finances.Valuation.Application.Features.Debt.Models.Debt", b =>
+            modelBuilder.Entity("Finances.Valuation.Application.Features.Debts.Models.Debt", b =>
                 {
                     b.HasOne("Finances.Valuation.Application.Features.Savings.Models.Saving", "Saving")
                         .WithMany()
@@ -210,7 +210,7 @@ namespace Finances.Valuation.Application.Migrations
 
             modelBuilder.Entity("Finances.Valuation.Application.Features.Strategies.Models.StrategyConfiguration", b =>
                 {
-                    b.HasOne("Finances.Valuation.Application.Features.Debt.Models.Debt", "Debt")
+                    b.HasOne("Finances.Valuation.Application.Features.Debts.Models.Debt", "Debt")
                         .WithMany()
                         .HasForeignKey("DebtId");
 

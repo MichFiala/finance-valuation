@@ -31,7 +31,7 @@ namespace Finances.Valuation.Application.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Investment",
+                name: "investments",
                 schema: "fin",
                 columns: table => new
                 {
@@ -42,7 +42,7 @@ namespace Finances.Valuation.Application.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Investment", x => x.Id);
+                    table.PrimaryKey("PK_investments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,16 +138,16 @@ namespace Finances.Valuation.Application.Migrations
                 {
                     table.PrimaryKey("PK_strategies_configurations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_strategies_configurations_Investment_InvestmentId",
-                        column: x => x.InvestmentId,
-                        principalSchema: "fin",
-                        principalTable: "Investment",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_strategies_configurations_debts_DebtId",
                         column: x => x.DebtId,
                         principalSchema: "fin",
                         principalTable: "debts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_strategies_configurations_investments_InvestmentId",
+                        column: x => x.InvestmentId,
+                        principalSchema: "fin",
+                        principalTable: "investments",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_strategies_configurations_savings_SavingId",
@@ -210,11 +210,11 @@ namespace Finances.Valuation.Application.Migrations
                 schema: "fin");
 
             migrationBuilder.DropTable(
-                name: "Investment",
+                name: "debts",
                 schema: "fin");
 
             migrationBuilder.DropTable(
-                name: "debts",
+                name: "investments",
                 schema: "fin");
 
             migrationBuilder.DropTable(

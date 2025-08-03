@@ -6,6 +6,8 @@
 # Ignore database
 *.db
 *.Development.json
+/data
+*_data.json
 
 # dotenv files
 .env

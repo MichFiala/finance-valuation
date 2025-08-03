@@ -7,7 +7,7 @@ internal class StrategyConfiguration
     public int StrategyId { get; set; }
 
     public int? DebtId { get; set; }
-    public Debt.Models.Debt? Debt { get; set; }
+    public Debts.Models.Debt? Debt { get; set; }
 
     public int? SavingId { get; set; }
     public Savings.Models.Saving? Saving { get; set; }
@@ -22,6 +22,10 @@ internal class StrategyConfiguration
 
     public int Priority { get; set; }
 
+    public decimal? MonthlyContributionAmount { get; set; }
+
+    public decimal? MonthlyContributionPercentage { get; set; }
+
     private static IReadOnlyDictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>> AssingFunctions = new Dictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>>
     {
         { StrategyConfigurationType.Debt, (strategyConfiguration, referenceId) => strategyConfiguration.DebtId = referenceId},
@@ -31,12 +35,13 @@ internal class StrategyConfiguration
     };
 
 
-    public static StrategyConfiguration Create(int strategyId, StrategyConfigurationType type, int referenceId)
+    public static StrategyConfiguration Create(int strategyId, StrategyConfigurationType type, int referenceId, int priority)
     {
         StrategyConfiguration strategyConfiguration = new StrategyConfiguration
         {
             StrategyId = strategyId,
-            Type = type
+            Type = type,
+            Priority = priority
         };
 
         if (AssingFunctions.TryGetValue(type, out Action<StrategyConfiguration, int>? assignFunction))
@@ -47,6 +52,6 @@ internal class StrategyConfiguration
         return strategyConfiguration;
     }
 
-    public static StrategyConfiguration Create(Strategy strategy, StrategyConfigurationDto itemDto) =>
-        Create(strategy.Id, itemDto.Type, itemDto.ReferenceId);
+    public static StrategyConfiguration Create(Strategy strategy, StrategyConfigurationDto itemDto, int priority) =>
+        Create(strategy.Id, itemDto.Type, itemDto.ReferenceId, priority);
 }

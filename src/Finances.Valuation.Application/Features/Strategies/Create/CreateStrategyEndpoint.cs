@@ -4,7 +4,7 @@ using Finances.Valuation.Application.Features.Strategies.Models;
 namespace Finances.Valuation.Application.Features.Strategies.Endpoints.Create;
 
 internal class CreateStrategyEndpoint(StrategyRepository strategyRepository) 
-    : Endpoint<StrategyDto>
+    : Endpoint<StrategyDto, StrategyDto>
 {
     public override void Configure()
     {
@@ -27,7 +27,7 @@ internal class CreateStrategyEndpoint(StrategyRepository strategyRepository)
         strategy = await strategyRepository.SaveAsync(strategy);
 
         List<StrategyConfiguration> strategyConfigurations =
-            strategyDto.StrategyConfigurations.Select(conf => StrategyConfiguration.Create(strategy.Id, conf.Type, conf.ReferenceId))
+            strategyDto.StrategyConfigurations.Select((conf, i) => StrategyConfiguration.Create(strategy, conf, i))
                                               .ToList();
 
         await strategyRepository.SaveAsync(strategyConfigurations);

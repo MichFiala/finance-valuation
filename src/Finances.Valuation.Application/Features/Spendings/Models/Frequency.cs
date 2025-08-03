@@ -1,6 +1,6 @@
 namespace Finances.Valuation.Application.Features.Spendings.Models;
 
-internal enum Frequency
+public enum Frequency
 {
     Monthly,
     Quaterly,

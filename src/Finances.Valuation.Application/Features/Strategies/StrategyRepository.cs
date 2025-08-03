@@ -40,7 +40,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
             return;
 
 
-        var strategies = strategyConfigurations.Select(conf => conf.StrategyId).ToList();
+        var strategies = strategyConfigurations.Select(conf => conf.StrategyId).Distinct().ToList();
 
         if (strategies.Count != 1)
             throw new InvalidDataException("Only configuration for one strategy allowed");

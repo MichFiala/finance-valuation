@@ -24,8 +24,6 @@ builder.Services.AddTransient<SavingRepository>();
 builder.Services.AddTransient<SpendingRepository>();
 builder.Services.AddTransient<StrategyRepository>();
 
-builder.Services.AddTransient<IStrategyService, StrategyService>();
-
 var app = builder.Build();
 
 app.UseFastEndpoints()

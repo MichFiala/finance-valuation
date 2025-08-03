@@ -8,12 +8,18 @@ public class StrategyConfigurationDto
     public StrategyConfigurationType Type { get; set; }
 
     public int ReferenceId { get; set; }
+
+    public decimal? MonthlyContributionAmount { get; set; }
+
+    public decimal? MonthlyContributionPercentage { get; set; }
     
     internal static StrategyConfigurationDto Create(StrategyConfiguration strategyConfiguration)
     {
         return new StrategyConfigurationDto
         {
             Type = strategyConfiguration.Type,
+            MonthlyContributionAmount = strategyConfiguration.MonthlyContributionAmount,
+            MonthlyContributionPercentage = strategyConfiguration.MonthlyContributionPercentage,    
             ReferenceId = strategyConfiguration.Type switch
             {
                 StrategyConfigurationType.Debt => strategyConfiguration.DebtId ?? 0,
