@@ -7,4 +7,13 @@ internal class Investment
     public required string Name { get; set; }
 
     public decimal Amount { get; set; }
+
+    internal static Investment Create(InvestmentDto investmentDto)
+    {
+        return new Investment
+        {
+            Name = investmentDto.Name,
+            Amount = investmentDto.Amount
+        };
+    }
 }

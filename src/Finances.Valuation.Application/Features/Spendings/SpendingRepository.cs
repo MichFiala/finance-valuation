@@ -29,7 +29,6 @@ internal class SpendingRepository(IDbContextFactory<AppDbContext> dbContextFacto
                         s.SetProperty(s => s.Name, s => spending.Name)
                          .SetProperty(s => s.Amount, s => spending.Amount)
                          .SetProperty(s => s.Frequency, s => spending.Frequency)
-                         .SetProperty(s => s.Month, s => spending.Month)
                      );
     }
 }

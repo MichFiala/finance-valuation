@@ -10,4 +10,14 @@ public class SpendingDto
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public Frequency Frequency { get; set; }
+    
+    internal static SpendingDto Create(Spending spending)
+    {
+        return new SpendingDto
+        {
+            Name = spending.Name,
+            Amount = spending.Amount,
+            Frequency = spending.Frequency
+        };
+    }
 }

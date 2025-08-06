@@ -3,7 +3,7 @@ using Finances.Valuation.Application.Features.Incomes.Models;
 
 namespace Finances.Valuation.Application.Features.Incomes.Create;
 
-internal class CreateIncomeEndpoint(IncomeRepository incomeRepository) : Endpoint<IncomeDto, IncomeDto>
+internal class CreateIncomeEndpoint(IncomeRepository incomeRepository) : Endpoint<List<IncomeDto>, List<IncomeDto>>
 {
     public override void Configure()
     {
@@ -16,17 +16,24 @@ internal class CreateIncomeEndpoint(IncomeRepository incomeRepository) : Endpoin
         });
     }
 
-    public override async Task<IncomeDto> HandleAsync(IncomeDto incomeDto, CancellationToken ct)
+    public override async Task<List<IncomeDto>> HandleAsync(List<IncomeDto> incomeDtos, CancellationToken ct)
     {
-        var income = new Income
+        if (incomeDtos == null || incomeDtos.Count == 0)
         {
-            Name = incomeDto.Name,
-            Amount = incomeDto.Amount,
-            Date = incomeDto.Date
-        };
+            throw new ArgumentException("IncomeDto list cannot be null or empty", nameof(incomeDtos));
+        }
 
-        await incomeRepository.SaveAsync(income);
+        var incomes = new List<Income>();
 
-        return incomeDto;
+        foreach (var incomeDto in incomeDtos)
+        {
+            var income = Income.Create(incomeDto);
+
+            await incomeRepository.SaveAsync(income);
+
+            incomes.Add(income);
+        }
+        
+        return incomes.Select(IncomeDto.Create).ToList();
     }
 }

@@ -3,7 +3,7 @@ using Finances.Valuation.Application.Features.Spendings.Models;
 
 namespace Finances.Valuation.Application.Features.Spendings.Create;
 
-internal class CreateSpendingEndpoint(SpendingRepository spendingRepository) : Endpoint<SpendingDto, SpendingDto>
+internal class CreateSpendingEndpoint(SpendingRepository spendingRepository) : Endpoint<List<SpendingDto>, List<SpendingDto>>
 {
     public override void Configure()
     {
@@ -16,17 +16,24 @@ internal class CreateSpendingEndpoint(SpendingRepository spendingRepository) : E
         });
     }
 
-    public override async Task<SpendingDto> HandleAsync(SpendingDto spendingDto, CancellationToken ct)
+    public override async Task<List<SpendingDto>> HandleAsync(List<SpendingDto> spendingDtos, CancellationToken ct)
     {
-        var spending = new Spending
+        if (spendingDtos == null || spendingDtos.Count == 0)
         {
-            Name = spendingDto.Name,
-            Amount = spendingDto.Amount,
-            Frequency = spendingDto.Frequency
-        };
+            throw new ArgumentException("SpendingDto list cannot be null or empty", nameof(spendingDtos));
+        }
 
-        await spendingRepository.SaveAsync(spending);
+        var spendings = new List<Spending>();
 
-        return spendingDto;
+        foreach (var spendingDto in spendingDtos)
+        {
+            var spending = Spending.Create(spendingDto);
+
+            await spendingRepository.SaveAsync(spending);
+            
+            spendings.Add(spending);
+        }
+
+        return spendings.Select(SpendingDto.Create).ToList();
     }
 }

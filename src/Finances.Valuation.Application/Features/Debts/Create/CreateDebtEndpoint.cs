@@ -3,7 +3,7 @@ using Finances.Valuation.Application.Features.Debts.Models;
 
 namespace Finances.Valuation.Application.Features.Debts.Create;
 
-internal class CreateDebtEndpoint(DebtRepository debtRepository) : Endpoint<DebtDto, DebtDto>
+internal class CreateDebtEndpoint(DebtRepository debtRepository) : Endpoint<List<DebtDto>, List<DebtDto>>
 {
     public override void Configure()
     {
@@ -16,19 +16,22 @@ internal class CreateDebtEndpoint(DebtRepository debtRepository) : Endpoint<Debt
         });
     }
 
-    public override async Task<DebtDto> HandleAsync(DebtDto debtDto, CancellationToken ct)
+    public override async Task<IReadOnlyCollection<DebtDto>> HandleAsync(List<DebtDto> debtDtos, CancellationToken ct)
     {
-        var debt = new Debt
+        if (debtDtos == null || debtDtos.Count == 0)
         {
-            Name = debtDto.Name,
-            DebtType = debtDto.DebtType,
-            Amount = debtDto.Amount,
-            Interest = debtDto.Interest,
-            Payment = debtDto.Payment
-        };
+            throw new ArgumentException("DebtDto list cannot be null or empty", nameof(debtDtos));
+        }
 
-        await debtRepository.SaveAsync(debt);
+        var debts = new List<Debt>();
 
-        return DebtDto.Create(debt);
+        foreach (var debtDto in debtDtos)
+        {
+            var debt = Debt.Create(debtDto);
+            await debtRepository.SaveAsync(debt);
+            debts.Add(debt);
+        }
+
+        return debts.Select(DebtDto.Create).ToList();
     }
 }

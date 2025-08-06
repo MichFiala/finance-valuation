@@ -3,7 +3,7 @@ using Finances.Valuation.Application.Features.Savings.Models;
 
 namespace Finances.Valuation.Application.Features.Savings.Create;
 
-internal class CreateSavingEndpoint(SavingRepository savingRepository) : Endpoint<SavingDto, SavingDto>
+internal class CreateSavingEndpoint(SavingRepository savingRepository) : Endpoint<List<SavingDto>, List<SavingDto>>
 {
     public override void Configure()
     {
@@ -16,18 +16,24 @@ internal class CreateSavingEndpoint(SavingRepository savingRepository) : Endpoin
         });
     }
 
-    public override async Task<SavingDto> HandleAsync(SavingDto savingDto, CancellationToken ct)
+    public override async Task<List<SavingDto>> HandleAsync(List<SavingDto> savingDtos, CancellationToken ct)
     {
-        var saving = new Saving
+        if (savingDtos == null || savingDtos.Count == 0)
         {
-            Name = savingDto.Name,
-            Amount = savingDto.Amount,
-            TargetAmount = savingDto.TargetAmount,
-            ExpectedMonthlyContributionAmount = savingDto.ExpectedMonthlyContributionAmount
-        };
+            throw new ArgumentException("SavingDto list cannot be null or empty", nameof(savingDtos));
+        }
 
-        await savingRepository.SaveAsync(saving);
+        var savings = new List<Saving>();
 
-        return SavingDto.Create(saving);
+        foreach (var savingDto in savingDtos)
+        {
+            var saving = Saving.Create(savingDto);
+            
+            await savingRepository.SaveAsync(saving);
+            
+            savings.Add(saving);
+        }
+
+        return savings.Select(SavingDto.Create).ToList();
     }
 }

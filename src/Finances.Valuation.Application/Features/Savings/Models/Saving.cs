@@ -16,5 +16,16 @@ internal class Saving
     public decimal? TargetAmount { get; set; }
 
     public decimal? ExpectedMonthlyContributionAmount { get; set; }
+
+    internal static Saving Create(SavingDto savingDto)
+    {
+        return new Saving
+        {
+            Name = savingDto.Name,
+            Amount = savingDto.Amount,
+            TargetAmount = savingDto.TargetAmount,
+            ExpectedMonthlyContributionAmount = savingDto.ExpectedMonthlyContributionAmount
+        };
+    }
 }
 

@@ -10,5 +10,13 @@ internal class Spending
 
     public Frequency Frequency { get; set; }
 
-    public int? Month { get; set; }
+    internal static Spending Create(SpendingDto spendingDto)
+    {
+        return new Spending
+        {
+            Name = spendingDto.Name,
+            Amount = spendingDto.Amount,
+            Frequency = spendingDto.Frequency
+        };
+    }
 }

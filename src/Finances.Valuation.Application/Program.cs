@@ -2,7 +2,9 @@ using FastEndpoints;
 using FastEndpoints.Swagger; 
 using Finances.Valuation.Application.Features.Debts;
 using Finances.Valuation.Application.Features.Incomes;
+using Finances.Valuation.Application.Features.Investments;
 using Finances.Valuation.Application.Features.Savings;
+using Finances.Valuation.Application.Features.SavingsLongevity;
 using Finances.Valuation.Application.Features.Spendings;
 using Finances.Valuation.Application.Features.Strategies;
 using Finances.Valuation.Application.Infrastructure.Persistence;
@@ -23,6 +25,9 @@ builder.Services.AddTransient<IncomeRepository>();
 builder.Services.AddTransient<SavingRepository>();
 builder.Services.AddTransient<SpendingRepository>();
 builder.Services.AddTransient<StrategyRepository>();
+builder.Services.AddTransient<InvestmentRepository>();
+
+builder.Services.AddTransient<SavingsLongevityCalculationService>();
 
 var app = builder.Build();
 

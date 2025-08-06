@@ -26,6 +26,19 @@ How to calculate when I will hit the target saving amount
 3) Apply income for the month => Get result for the saving add it to the rest
 4) Repeat until goal is hit
 
+It should also calculate how many months I can survive on the savings
+
+Savings Longevity Feature
+------------------------
+This feature calculates how many months your current savings and investments will last, based on your spendings. 
+The calculation is performed by the `SavingsLongevityCalculationService`, which:
+
+- Retrieves all savings and investments amounts.
+- Retrieves all spendings and calculates the monthly total (currently only monthly spendings are considered).
+- Divides the total available funds (savings + investments) by the monthly spendings.
+- Returns the number of months your funds will cover your spendings.
+
+This feature is implemented as a separate module and does not mix with other features.
 
 
 

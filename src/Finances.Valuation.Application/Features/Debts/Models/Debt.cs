@@ -22,4 +22,16 @@ internal class Debt
     public Saving? Saving { get; set; } = null;
 
     public int? SavingId { get; set; }
+
+    internal static Debt Create(DebtDto debtDto)
+    {
+        return new Debt
+        {
+            Name = debtDto.Name,
+            DebtType = debtDto.DebtType,
+            Amount = debtDto.Amount,
+            Interest = debtDto.Interest,
+            Payment = debtDto.Payment
+        };
+    }
 }
