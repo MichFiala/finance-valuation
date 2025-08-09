@@ -35,13 +35,21 @@ internal class StrategyConfiguration
     };
 
 
-    public static StrategyConfiguration Create(int strategyId, StrategyConfigurationType type, int referenceId, int priority)
+    public static StrategyConfiguration Create(
+        int strategyId,
+        StrategyConfigurationType type,
+        int referenceId,
+        int priority,
+        decimal? monthlyContributionAmount,
+        decimal? monthlyContributionPercentage)
     {
         StrategyConfiguration strategyConfiguration = new StrategyConfiguration
         {
             StrategyId = strategyId,
             Type = type,
-            Priority = priority
+            Priority = priority,
+            MonthlyContributionAmount = monthlyContributionAmount,
+            MonthlyContributionPercentage = monthlyContributionPercentage
         };
 
         if (AssingFunctions.TryGetValue(type, out Action<StrategyConfiguration, int>? assignFunction))
@@ -53,5 +61,5 @@ internal class StrategyConfiguration
     }
 
     public static StrategyConfiguration Create(Strategy strategy, StrategyConfigurationDto itemDto, int priority) =>
-        Create(strategy.Id, itemDto.Type, itemDto.ReferenceId, priority);
+        Create(strategy.Id, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage);
 }

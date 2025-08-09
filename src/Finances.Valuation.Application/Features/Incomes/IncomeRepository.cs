@@ -12,6 +12,15 @@ internal class IncomeRepository(IDbContextFactory<AppDbContext> dbContextFactory
         return await context.Incomes.ToListAsync();
     }
 
+    public async Task<Income?> GetAsync(int id)
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+
+        return await context.Incomes
+                            .FindAsync(id);
+    }
+    
+
     public async Task SaveAsync(Income income)
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();

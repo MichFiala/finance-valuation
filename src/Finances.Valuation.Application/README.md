@@ -42,4 +42,9 @@ This feature is implemented as a separate module and does not mix with other fea
 
 
 
+TODO
+
+Add account name information and grouping strategy configuration based on accounts
+Also apply calculation to automatically update the records in the db - savings, spendings etc.
+
 

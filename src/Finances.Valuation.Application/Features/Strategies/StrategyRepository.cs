@@ -12,6 +12,45 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
         return await context.Strategies.ToListAsync();
     }
 
+    public async Task<IReadOnlyCollection<Models.StrategyConfiguration>> GetByStrategyIdAsync(int strategyId)
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+
+        var debtStrategyConfigurations =
+            await context.StrategiesConfigurations
+                         .Where(conf => conf.DebtId != null)
+                         .Include(conf => conf.Debt)
+                         .Where(conf => conf.StrategyId == strategyId)
+                         .ToListAsync();
+
+        var savingStrategyConfigurations =
+            await context.StrategiesConfigurations
+                         .Where(conf => conf.SavingId != null)
+                         .Include(conf => conf.Saving)
+                         .Where(conf => conf.StrategyId == strategyId)
+                         .ToListAsync();
+
+        var spendingStrategyConfigurations =
+            await context.StrategiesConfigurations
+                         .Where(conf => conf.SpendingId != null)
+                         .Include(conf => conf.Spending)
+                         .Where(conf => conf.StrategyId == strategyId)
+                         .ToListAsync();
+
+        var investmentStrategyConfigurations =
+            await context.StrategiesConfigurations
+                         .Where(conf => conf.InvestmentId != null)
+                         .Include(conf => conf.Investment)
+                         .Where(conf => conf.StrategyId == strategyId)
+                         .ToListAsync();
+
+        return debtStrategyConfigurations.Concat(savingStrategyConfigurations)
+                                         .Concat(spendingStrategyConfigurations)
+                                         .Concat(investmentStrategyConfigurations)
+                                         .OrderBy(conf => conf.Priority)
+                                         .ToList();  
+    }
+
     public async Task<Models.Strategy> SaveAsync(Models.Strategy strategy)
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
