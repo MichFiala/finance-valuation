@@ -4,6 +4,7 @@ namespace Finances.Valuation.Application.Features.Debts.Models;
 
 public class DebtDto
 {
+    public int Id { get; set;}
     public required string Name { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -19,6 +20,7 @@ public class DebtDto
     {
         return new DebtDto
         {
+            Id = debt.Id,
             Name = debt.Name,
             DebtType = debt.DebtType,
             Amount = debt.Amount,

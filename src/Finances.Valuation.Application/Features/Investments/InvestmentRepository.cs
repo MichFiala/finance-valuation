@@ -6,6 +6,12 @@ namespace Finances.Valuation.Application.Features.Investments;
 
 internal class InvestmentRepository(IDbContextFactory<AppDbContext> dbContextFactory)
 {
+    public async Task<Investment?> GetAsync(int id)
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+        return await context.Investments.FindAsync(id);
+    }
+
     public async Task<IReadOnlyCollection<Investment>> GetAsync()
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();

@@ -2,6 +2,7 @@ namespace Finances.Valuation.Application.Features.Savings.Models;
 
 public class SavingDto
 {
+    public int Id { get; set; }
     public required string Name { get; set; }
 
     public required decimal Amount { get; set; }
@@ -14,6 +15,7 @@ public class SavingDto
     {
         return new SavingDto
         {
+            Id = saving.Id,
             Name = saving.Name,
             Amount = saving.Amount,
             TargetAmount = saving.TargetAmount,

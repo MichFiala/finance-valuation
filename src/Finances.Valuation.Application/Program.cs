@@ -12,6 +12,17 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowSpecificApp", policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+    });
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddFastEndpoints()
@@ -30,6 +41,8 @@ builder.Services.AddTransient<InvestmentRepository>();
 builder.Services.AddTransient<SavingsLongevityCalculationService>();
 
 var app = builder.Build();
+
+app.UseCors("AllowSpecificApp");
 
 app.UseFastEndpoints()
    .UseSwaggerGen();

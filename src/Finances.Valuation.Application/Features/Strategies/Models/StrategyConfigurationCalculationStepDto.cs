@@ -5,6 +5,7 @@ namespace Finances.Valuation.Application.Features.Strategies.Models;
 
 public class StrategyConfigurationCalculationStepDto
 {
+    public int Id { get; set; }
     public required string Name { get; set; }
     
     [JsonConverter(typeof(JsonStringEnumConverter))]

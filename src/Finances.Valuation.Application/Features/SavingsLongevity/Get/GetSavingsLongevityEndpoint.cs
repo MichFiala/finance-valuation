@@ -21,6 +21,13 @@ internal class GetSavingsLongevityEndpoint(SavingsLongevityCalculationService lo
     {
         int longevity = await longevityService.CalculateMonthsOfLongevityAsync();
 
-        await Send.OkAsync(new GetSavingsLongevityResponse { Months = longevity, Till = DateOnly.FromDateTime(DateTime.Now.AddMonths(longevity)) }, ct);
+        var grade = SavingsLongevityCalculationService.ValuateGrade(longevity);
+
+        await Send.OkAsync(new GetSavingsLongevityResponse
+        {
+            Months = longevity,
+            Till = DateOnly.FromDateTime(DateTime.Now.AddMonths(longevity)),
+            Grade = grade
+        }, ct);
     }
 }

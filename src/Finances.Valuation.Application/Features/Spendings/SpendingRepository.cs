@@ -12,6 +12,20 @@ internal class SpendingRepository(IDbContextFactory<AppDbContext> dbContextFacto
         return await context.Spendings.ToListAsync();
     }
 
+    public async Task<IReadOnlyCollection<Models.Spending>> GetMandatoryAsync()
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+
+        return await context.Spendings.Where(s => s.IsMandatory).ToListAsync();
+    }
+
+    public async Task<Models.Spending?> GetAsync(int id)
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+
+        return await context.Spendings.FindAsync(id);
+    }
+
     public async Task SaveAsync(Models.Spending spending)
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
@@ -29,6 +43,7 @@ internal class SpendingRepository(IDbContextFactory<AppDbContext> dbContextFacto
                         s.SetProperty(s => s.Name, s => spending.Name)
                          .SetProperty(s => s.Amount, s => spending.Amount)
                          .SetProperty(s => s.Frequency, s => spending.Frequency)
+                         .SetProperty(s => s.IsMandatory, s => spending.IsMandatory)
                      );
     }
 }

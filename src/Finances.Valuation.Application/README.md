@@ -41,10 +41,20 @@ The calculation is performed by the `SavingsLongevityCalculationService`, which:
 This feature is implemented as a separate module and does not mix with other features.
 
 
+Financial wealth steps (pyramid)
+------------------------
+
+It should validate predifined steps it should highlight level of wealth
+
+Net worth tracking
+------------------------
+It should periodically save actual account balance like savings, debt, investments
+Then we should be able to see how it changed in months
 
 TODO
 
 Add account name information and grouping strategy configuration based on accounts
 Also apply calculation to automatically update the records in the db - savings, spendings etc.
+The spending should have mandatory check box - it means it is neccessary to live
 
 

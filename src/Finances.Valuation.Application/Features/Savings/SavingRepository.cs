@@ -12,6 +12,13 @@ internal class SavingRepository(IDbContextFactory<AppDbContext> dbContextFactory
         return await context.Savings.ToListAsync();
     }
 
+    public async Task<Models.Saving?> GetAsync(int id)
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+
+        return await context.Savings.FindAsync(id);
+    }
+
     public async Task SaveAsync(Models.Saving saving)
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();

@@ -3,6 +3,7 @@ namespace Finances.Valuation.Application.Features.Strategies.Models;
 
 public class StrategyConfigurationDto
 {
+    public required int Id { get; set; }
     public string Name { get; set; } = string.Empty;
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -35,6 +36,7 @@ public class StrategyConfigurationDto
 
         return new StrategyConfigurationDto
         {
+            Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Debt.Name,
             Type = StrategyConfigurationType.Debt,
             MonthlyContributionAmount = strategyConfiguration.Debt.Payment,
@@ -51,6 +53,7 @@ public class StrategyConfigurationDto
 
         return new StrategyConfigurationDto
         {
+            Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Investment.Name,
             Type = StrategyConfigurationType.Investment,
             MonthlyContributionAmount = strategyConfiguration.MonthlyContributionAmount,
@@ -68,6 +71,7 @@ public class StrategyConfigurationDto
 
         return new StrategyConfigurationDto
         {
+            Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Saving.Name,
             Type = StrategyConfigurationType.Saving,
             MonthlyContributionAmount = strategyConfiguration.MonthlyContributionAmount ?? strategyConfiguration.Saving.ExpectedMonthlyContributionAmount,
@@ -85,6 +89,7 @@ public class StrategyConfigurationDto
 
         return new StrategyConfigurationDto
         {
+            Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Spending.Name,
             Type = StrategyConfigurationType.Spending,
             MonthlyContributionAmount = strategyConfiguration.Spending.Amount,

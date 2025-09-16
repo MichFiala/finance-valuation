@@ -22,6 +22,11 @@ internal class GetCalculatedStrategyConfigurationsEndpoint(StrategyRepository st
 
     public override async Task HandleAsync(GetCalculatedStrategyConfigurationsRequest request, CancellationToken ct)
     {
+        Strategy? strategy = await strategyRepository.GetAsync(request.StrategyId);
+        
+        if (strategy is null)
+            ThrowError("Strategy not found for {request.StrategyId}.");
+
         IReadOnlyCollection<StrategyConfiguration>? strategyConfigurations = await strategyRepository.GetByStrategyIdAsync(request.StrategyId);
 
         if (strategyConfigurations is null)
@@ -38,6 +43,7 @@ internal class GetCalculatedStrategyConfigurationsEndpoint(StrategyRepository st
         
         await Send.OkAsync(new GetCalculatedStrategyConfigurationsResponse
         {
+            Name = strategy.Name,
             StrategyConfigurationsCalculationSteps = calculatedConfigurations.ToList()
         }, ct);
     }

@@ -20,15 +20,21 @@ internal class GetStrategyConfigurationsEndpoint(StrategyRepository strategyRepo
 
     public override async Task HandleAsync(GetStrategyConfigurationsRequest request, CancellationToken ct)
     {
+        var strategy = await strategyRepository.GetAsync(request.StrategyId);
+
+        if(strategy is null)
+            ThrowError("Strategy not found for {request.StrategyId}.");
+
         IReadOnlyCollection<StrategyConfiguration>? strategyConfigurations = await strategyRepository.GetByStrategyIdAsync(request.StrategyId);
 
         if (strategyConfigurations is null)
-            ThrowError("Strategy configurations not found for {request.Id}.");
+            ThrowError("Strategy configurations not found for {request.StrategyId}.");
 
         var strategyConfigurationsDtos = strategyConfigurations.Select(StrategyConfigurationDto.Create).ToList();
 
         await Send.OkAsync(new GetStrategyConfigurationsResponse
         {
+            Name = strategy.Name,
             StrategyConfigurations = strategyConfigurationsDtos
         }, ct);
     }

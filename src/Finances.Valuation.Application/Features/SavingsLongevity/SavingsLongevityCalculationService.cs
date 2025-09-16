@@ -2,6 +2,7 @@ using Finances.Valuation.Application.Features.Debts;
 using Finances.Valuation.Application.Features.Debts.Models;
 using Finances.Valuation.Application.Features.Investments;
 using Finances.Valuation.Application.Features.Savings;
+using Finances.Valuation.Application.Features.SavingsLongevity.Get.Models;
 using Finances.Valuation.Application.Features.Spendings;
 using Finances.Valuation.Application.Features.Spendings.Models;
 
@@ -9,16 +10,16 @@ namespace Finances.Valuation.Application.Features.SavingsLongevity;
 
 internal class SavingsLongevityCalculationService(
     SavingRepository savingRepository,
-    InvestmentRepository investmentRepository, 
+    InvestmentRepository investmentRepository,
     SpendingRepository spendingRepository,
     DebtRepository debtRepository)
 {
     public async Task<int> CalculateMonthsOfLongevityAsync()
     {
-        IReadOnlyCollection<Spending> totalSpendings = await spendingRepository.GetAsync();
-        IReadOnlyCollection<Investments.Models.Investment> investments = await investmentRepository.GetAsync(); 
+        IReadOnlyCollection<Spending> totalSpendings = await spendingRepository.GetMandatoryAsync();
+        IReadOnlyCollection<Investments.Models.Investment> investments = await investmentRepository.GetAsync();
         IReadOnlyCollection<Debt> debts = await debtRepository.GetAsync();
-        
+
         decimal yearlySpendingsMonthlySpreaded = totalSpendings
             .Where(s => s.Frequency == Frequency.Yearly)
             .Sum(s => s.Amount) / 12;
@@ -54,5 +55,18 @@ internal class SavingsLongevityCalculationService(
             monthsOfLongevity++;
         }
         return monthsOfLongevity;
+    }
+
+    public static SavingsLongevityGrade ValuateGrade(int months)
+    {
+        return months switch
+        {
+            <= 1 => SavingsLongevityGrade.Critical,
+            > 1 and <= 2 => SavingsLongevityGrade.Insufficient,
+            > 3 and <= 5 => SavingsLongevityGrade.NeedsImprovement,
+            6 => SavingsLongevityGrade.Recommended,
+            > 7 and <= 11 => SavingsLongevityGrade.Strong,
+            _ => SavingsLongevityGrade.Excellent
+        };
     }
 }

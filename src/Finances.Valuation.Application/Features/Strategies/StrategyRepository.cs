@@ -11,6 +11,13 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
 
         return await context.Strategies.ToListAsync();
     }
+    
+    public async Task<Models.Strategy?> GetAsync(int strategyId)
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+
+        return await context.Strategies.FindAsync(strategyId);
+    }
 
     public async Task<IReadOnlyCollection<Models.StrategyConfiguration>> GetByStrategyIdAsync(int strategyId)
     {
@@ -48,7 +55,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
                                          .Concat(spendingStrategyConfigurations)
                                          .Concat(investmentStrategyConfigurations)
                                          .OrderBy(conf => conf.Priority)
-                                         .ToList();  
+                                         .ToList();
     }
 
     public async Task<Models.Strategy> SaveAsync(Models.Strategy strategy)

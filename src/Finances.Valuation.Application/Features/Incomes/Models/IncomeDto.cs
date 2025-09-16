@@ -2,6 +2,7 @@ namespace Finances.Valuation.Application.Features.Incomes.Models;
 
 public class IncomeDto
 {
+    public int Id { get; set; }
     public required string Name { get; set; }
     public decimal Amount { get; set; }
     public DateOnly Date { get; set; }
@@ -10,6 +11,7 @@ public class IncomeDto
     {
         return new IncomeDto
         {
+            Id = income.Id,
             Name = income.Name,
             Amount = income.Amount,
             Date = income.Date

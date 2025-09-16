@@ -5,6 +5,12 @@ namespace Finances.Valuation.Application.Features.Debts;
 
 internal class DebtRepository(IDbContextFactory<AppDbContext> dbContextFactory)
 {
+    public async Task<Models.Debt?> GetAsync(int id)
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+
+        return await context.Debts.FindAsync(id);
+    }
     public async Task<IReadOnlyCollection<Models.Debt>> GetAsync()
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();

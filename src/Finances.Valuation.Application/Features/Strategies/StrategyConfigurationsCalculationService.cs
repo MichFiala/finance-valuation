@@ -17,13 +17,14 @@ internal static class StrategyConfigurationsCalculationService
             decimal? contributionAmount = configuration.MonthlyContributionAmount;
             
             if (configuration.MonthlyContributionAmount is null)
-                contributionAmount = configuration.MonthlyContributionPercentage is not null ? income.Amount * configuration.MonthlyContributionPercentage : 0;
+                contributionAmount = configuration.MonthlyContributionPercentage is not null ? income.Amount * configuration.MonthlyContributionPercentage : availableAmount;
             
             if (contributionAmount > availableAmount)
                 contributionAmount = availableAmount;
 
             yield return new StrategyConfigurationCalculationStepDto
             {
+                Id = configuration.Id,
                 Name = configuration.Name,
                 Type = configuration.Type,
                 AvailableAmount = availableAmount,

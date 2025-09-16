@@ -1,9 +1,10 @@
 using FastEndpoints;
+using Finances.Valuation.Application.Features.Spendings.Create.Models;
 using Finances.Valuation.Application.Features.Spendings.Models;
 
 namespace Finances.Valuation.Application.Features.Spendings.Create;
 
-internal class CreateSpendingEndpoint(SpendingRepository spendingRepository) : Endpoint<List<SpendingDto>, List<SpendingDto>>
+internal class CreateSpendingEndpoint(SpendingRepository spendingRepository) : Endpoint<CreateSpendingRequest, EmptyResponse>
 {
     public override void Configure()
     {
@@ -16,24 +17,20 @@ internal class CreateSpendingEndpoint(SpendingRepository spendingRepository) : E
         });
     }
 
-    public override async Task<List<SpendingDto>> HandleAsync(List<SpendingDto> spendingDtos, CancellationToken ct)
+    public override async Task<EmptyResponse> HandleAsync(CreateSpendingRequest request, CancellationToken ct)
     {
-        if (spendingDtos == null || spendingDtos.Count == 0)
+        SpendingDto dto = new()
         {
-            throw new ArgumentException("SpendingDto list cannot be null or empty", nameof(spendingDtos));
-        }
+            Name = request.Name,
+            Amount = request.Amount,
+            Frequency = request.Frequency,
+            IsMandatory = request.IsMandatory
+        };
 
-        var spendings = new List<Spending>();
+        var spending = Spending.Create(dto);
 
-        foreach (var spendingDto in spendingDtos)
-        {
-            var spending = Spending.Create(spendingDto);
+        await spendingRepository.SaveAsync(spending);
 
-            await spendingRepository.SaveAsync(spending);
-            
-            spendings.Add(spending);
-        }
-
-        return spendings.Select(SpendingDto.Create).ToList();
+        return new EmptyResponse();
     }
 }
