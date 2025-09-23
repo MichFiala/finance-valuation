@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
+using Finances.Valuation.Application.Features.Shared.Models;
 
 namespace Finances.Valuation.Application.Features.Debts.Models;
 
-public class DebtDto
+public class DebtDto : IEntityDto
 {
     public int Id { get; set;}
     public required string Name { get; set; }

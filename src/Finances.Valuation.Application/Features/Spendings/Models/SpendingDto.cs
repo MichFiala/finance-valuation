@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
+using Finances.Valuation.Application.Features.Shared.Models;
 
 namespace Finances.Valuation.Application.Features.Spendings.Models;
 
-public class SpendingDto
+public class SpendingDto : IEntityDto
 {
     public int Id { get; set; }
 
@@ -14,16 +15,4 @@ public class SpendingDto
     public Frequency Frequency { get; set; }
 
     public bool IsMandatory { get; set; }
-    
-    internal static SpendingDto Create(Spending spending)
-    {
-        return new SpendingDto
-        {
-            Id = spending.Id,
-            Name = spending.Name,
-            Amount = spending.Amount,
-            Frequency = spending.Frequency,
-            IsMandatory = spending.IsMandatory
-        };
-    }
 }

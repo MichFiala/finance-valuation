@@ -1,43 +1,19 @@
-using Finances.Valuation.Application.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+using Finances.Valuation.Application.Features.Debts.Models;
+using Finances.Valuation.Application.Features.Shared.Repositories;
 
 namespace Finances.Valuation.Application.Features.Debts;
 
-internal class DebtRepository(IDbContextFactory<AppDbContext> dbContextFactory)
+internal class DebtRepository(CrudDomainRepository crudDomainRepository) : ICrudDomainRepository<Debt>
 {
-    public async Task<Models.Debt?> GetAsync(int id)
-    {
-        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
-
-        return await context.Debts.FindAsync(id);
-    }
-    public async Task<IReadOnlyCollection<Models.Debt>> GetAsync()
-    {
-        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
-
-        return await context.Debts.ToListAsync();
-    }
-
-    public async Task SaveAsync(Models.Debt debt)
-    {
-        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
-        if (debt.Id <= 0)
-        {
-            context.Debts.Add(debt);
-            await context.SaveChangesAsync();
-
-            return;
-        }
-
-        await context.Debts
-                     .Where(d => d.Id == debt.Id)
-                     .ExecuteUpdateAsync(s =>
+    public async Task<IReadOnlyCollection<Debt>> GetAsync(string userId) => await crudDomainRepository.GetAsync<Debt>(userId);
+    public async Task<Debt?> GetAsync(int id, string userId) => await crudDomainRepository.GetAsync<Debt>(id, userId);
+    public async Task<Debt> SaveAsync(Debt debt)  => await crudDomainRepository.SaveAsync(debt, s =>
                         s.SetProperty(d => d.Name, d => debt.Name)
                          .SetProperty(d => d.DebtType, d => debt.DebtType)
                          .SetProperty(d => d.Amount, d => debt.Amount)
                          .SetProperty(d => d.Interest, d => debt.Interest)
                          .SetProperty(d => d.Payment, d => debt.Payment)
-                         .SetProperty(d => d.SavingId, d => debt.SavingId)
-                     );
-    }
+                         .SetProperty(d => d.SavingId, d => debt.SavingId));
+
+    public async Task DeleteAsync(int id, string userId) => await crudDomainRepository.DeleteAsync<Debt>(id, userId);
 }

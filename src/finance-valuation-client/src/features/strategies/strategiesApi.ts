@@ -2,8 +2,12 @@ import { CalculatedStrategyResponseDto } from "./strategyCalculatedModel";
 import { StrategyDto } from "./strategyModel";
 
 export async function fetchStrategy() {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'http://localhost:5153';
-  const response = await fetch(`${apiUrl}/strategies/1`);
+  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const response = await fetch(`${apiUrl}/strategies/1`,
+    {
+    method: "GET",
+    credentials: "include",
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch strategy');
   }
@@ -11,8 +15,11 @@ export async function fetchStrategy() {
 }
 
 export async function fetchCalculatedStrategy(incomeId: number) {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'http://localhost:5153';
-  const response = await fetch(`${apiUrl}/strategies/1/calculate?incomeId=${incomeId}`);
+  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const response = await fetch(`${apiUrl}/strategies/1/calculate?incomeId=${incomeId}`,{
+    method: "GET",
+    credentials: "include",
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch strategy');
   }

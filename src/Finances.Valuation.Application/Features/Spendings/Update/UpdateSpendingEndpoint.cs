@@ -1,15 +1,16 @@
 using FastEndpoints;
+using Finances.Valuation.Application.Features.Shared.Endpoints.Update;
 using Finances.Valuation.Application.Features.Spendings.Models;
-using Finances.Valuation.Application.Features.Spendings.Update.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Spendings.Update;
 
-internal class UpdateSpendingEndpoint(SpendingRepository spendingRepository) : Endpoint<UpdateSpendingRequest, EmptyResponse>    
+internal class UpdateSpendingEndpoint(UpdateHandler updateHandler, SpendingRepository spendingRepository) : Endpoint<SpendingDto, EmptyResponse>
 {
     public override void Configure()
     {
         Post("/spendings/{Id}");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Updates an existing spending entry";
@@ -17,21 +18,14 @@ internal class UpdateSpendingEndpoint(SpendingRepository spendingRepository) : E
         });
     }
 
-    public override async Task<EmptyResponse> HandleAsync(UpdateSpendingRequest request, CancellationToken ct)
+    public override async Task<EmptyResponse> HandleAsync(SpendingDto request, CancellationToken ct)
     {
-        if (request is null)
+        return await updateHandler.HandleAsync(request, (spending) =>
         {
-            throw new ArgumentException("UpdateSpendingRequest cannot be null", nameof(request));
-        }
-        Spending spending = await spendingRepository.GetAsync(request.Id) ?? throw new ArgumentException($"Spending with id {Route<int>("id")} not found", nameof(request));
-
-        spending.Name = request.Name;
-        spending.Amount = request.Amount;
-        spending.Frequency = request.Frequency;
-        spending.IsMandatory = request.IsMandatory;
-
-        await spendingRepository.SaveAsync(spending);
-
-        return new EmptyResponse();
-    }
+            spending.Name = request.Name;
+            spending.Amount = request.Amount;
+            spending.Frequency = request.Frequency;
+            spending.IsMandatory = request.IsMandatory;
+        }, spendingRepository, HttpContext);
+    }     
 }

@@ -1,18 +1,20 @@
+using System.Security.Authentication;
 using FastEndpoints;
 using Finances.Valuation.Application.Features.Incomes;
-using Finances.Valuation.Application.Features.Incomes.Models;
+using Finances.Valuation.Application.Features.Shared.Extensions;
 using Finances.Valuation.Application.Features.Strategies.Get.Models;
 using Finances.Valuation.Application.Features.Strategies.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Strategies.Get;
 
-internal class GetCalculatedStrategyConfigurationsEndpoint(StrategyRepository strategyRepository, IncomeRepository incomeRepository) 
+internal class GetCalculatedStrategyConfigurationsEndpoint(UserManager<User.Models.User> userManager, StrategyRepository strategyRepository, IncomeRepository incomeRepository) 
     : Endpoint<GetCalculatedStrategyConfigurationsRequest, GetCalculatedStrategyConfigurationsResponse>
 {
     public override void Configure()
     {
         Get("/strategies/{StrategyId}/calculate");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Calculates the strategy configurations";
@@ -22,17 +24,19 @@ internal class GetCalculatedStrategyConfigurationsEndpoint(StrategyRepository st
 
     public override async Task HandleAsync(GetCalculatedStrategyConfigurationsRequest request, CancellationToken ct)
     {
-        Strategy? strategy = await strategyRepository.GetAsync(request.StrategyId);
+        User.Models.User? user = await userManager.FindByEmailAsync(HttpContext.Email()) ?? throw new AuthenticationException($"User not found by email {HttpContext.Email()}");
+
+        Strategy? strategy = await strategyRepository.GetAsync(request.StrategyId, user.Id);
         
         if (strategy is null)
             ThrowError("Strategy not found for {request.StrategyId}.");
 
-        IReadOnlyCollection<StrategyConfiguration>? strategyConfigurations = await strategyRepository.GetByStrategyIdAsync(request.StrategyId);
+        IReadOnlyCollection<StrategyConfiguration>? strategyConfigurations = await strategyRepository.GetByStrategyIdAsync(request.StrategyId, user.Id);
 
         if (strategyConfigurations is null)
             ThrowError("Strategy configurations not found for {request.StrategyId}.");
 
-        var income = await incomeRepository.GetAsync(request.IncomeId);
+        var income = await incomeRepository.GetAsync(request.IncomeId, user.Id);
 
         if (income is null)
             ThrowError("Income not found for {request.IncomeId}.");

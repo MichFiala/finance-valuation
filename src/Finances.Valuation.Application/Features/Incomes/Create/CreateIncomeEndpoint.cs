@@ -1,14 +1,16 @@
 using FastEndpoints;
 using Finances.Valuation.Application.Features.Incomes.Models;
+using Finances.Valuation.Application.Features.Shared.Endpoints.Create;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Incomes.Create;
 
-internal class CreateIncomeEndpoint(IncomeRepository incomeRepository) : Endpoint<List<IncomeDto>, List<IncomeDto>>
+internal class CreateIncomeEndpoint(CreateHandler createHandler, IncomeRepository incomeRepository) : Endpoint<IncomeDto, EmptyResponse>
 {
     public override void Configure()
     {
         Post("/incomes");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Creates a new income entry";
@@ -16,24 +18,6 @@ internal class CreateIncomeEndpoint(IncomeRepository incomeRepository) : Endpoin
         });
     }
 
-    public override async Task<List<IncomeDto>> HandleAsync(List<IncomeDto> incomeDtos, CancellationToken ct)
-    {
-        if (incomeDtos == null || incomeDtos.Count == 0)
-        {
-            throw new ArgumentException("IncomeDto list cannot be null or empty", nameof(incomeDtos));
-        }
-
-        var incomes = new List<Income>();
-
-        foreach (var incomeDto in incomeDtos)
-        {
-            var income = Income.Create(incomeDto);
-
-            await incomeRepository.SaveAsync(income);
-
-            incomes.Add(income);
-        }
-        
-        return incomes.Select(IncomeDto.Create).ToList();
-    }
+    public override async Task<EmptyResponse> HandleAsync(IncomeDto request, CancellationToken ct)
+            => await createHandler.HandleAsync(request, Income.Create, incomeRepository, HttpContext);
 }

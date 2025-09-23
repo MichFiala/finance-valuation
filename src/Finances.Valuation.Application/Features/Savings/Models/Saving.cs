@@ -1,11 +1,12 @@
 
 using System.Runtime.CompilerServices;
+using Finances.Valuation.Application.Features.Shared.Models;
 
 [assembly: InternalsVisibleTo("Finances.Valuation.Application.Test")]
 
 namespace Finances.Valuation.Application.Features.Savings.Models;
 
-internal class Saving
+internal class Saving : IDatabaseEntry, IUserRelated
 {
     public int Id { get; set; }
 
@@ -17,14 +18,19 @@ internal class Saving
 
     public decimal? ExpectedMonthlyContributionAmount { get; set; }
 
-    internal static Saving Create(SavingDto savingDto)
+    public required string UserId { get; set; }
+
+    public User.Models.User? User { get; set; }
+
+    internal static Saving Create(SavingDto savingDto, string userId)
     {
         return new Saving
         {
             Name = savingDto.Name,
             Amount = savingDto.Amount,
             TargetAmount = savingDto.TargetAmount,
-            ExpectedMonthlyContributionAmount = savingDto.ExpectedMonthlyContributionAmount
+            ExpectedMonthlyContributionAmount = savingDto.ExpectedMonthlyContributionAmount,
+            UserId = userId
         };
     }
 }

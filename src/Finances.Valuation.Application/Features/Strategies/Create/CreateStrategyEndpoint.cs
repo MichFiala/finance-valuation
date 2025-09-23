@@ -1,15 +1,18 @@
+using System.Security.Authentication;
 using FastEndpoints;
+using Finances.Valuation.Application.Features.Shared.Extensions;
 using Finances.Valuation.Application.Features.Strategies.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Strategies.Endpoints.Create;
 
-internal class CreateStrategyEndpoint(StrategyRepository strategyRepository) 
+internal class CreateStrategyEndpoint(UserManager<User.Models.User> userManager, StrategyRepository strategyRepository) 
     : Endpoint<StrategyDto, StrategyDto>
 {
     public override void Configure()
     {
         Post("/strategies");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Creates a new strategy";
@@ -19,11 +22,9 @@ internal class CreateStrategyEndpoint(StrategyRepository strategyRepository)
 
     public override async Task<StrategyDto> HandleAsync(StrategyDto strategyDto, CancellationToken ct)
     {
-        var strategy = new Strategy
-        {
-            Name = strategyDto.Name,
-        };
+        User.Models.User? user = await userManager.FindByEmailAsync(HttpContext.Email()) ?? throw new AuthenticationException($"User not found by email {HttpContext.Email()}");
 
+        Strategy strategy = Strategy.Create(strategyDto, user.Id);
         strategy = await strategyRepository.SaveAsync(strategy);
 
         List<StrategyConfiguration> strategyConfigurations =

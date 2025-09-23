@@ -1,30 +1,24 @@
+using Finances.Valuation.Application.Features.Shared.Extensions;
+using Finances.Valuation.Application.Features.Shared.Repositories;
+using Finances.Valuation.Application.Features.Strategies.Models;
 using Finances.Valuation.Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Finances.Valuation.Application.Features.Strategies;
 
-internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFactory)
+internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFactory, CrudDomainRepository crudDomainRepository)
 {
-    public async Task<IReadOnlyCollection<Models.Strategy>> GetAsync()
-    {
-        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+    public async Task<IReadOnlyCollection<Strategy>> GetAsync(string userId) => await crudDomainRepository.GetAsync<Strategy>(userId);
 
-        return await context.Strategies.ToListAsync();
-    }
-    
-    public async Task<Models.Strategy?> GetAsync(int strategyId)
-    {
-        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+    public async Task<Strategy?> GetAsync(int id, string userId) => await crudDomainRepository.GetAsync<Strategy>(id, userId);
 
-        return await context.Strategies.FindAsync(strategyId);
-    }
-
-    public async Task<IReadOnlyCollection<Models.StrategyConfiguration>> GetByStrategyIdAsync(int strategyId)
+    public async Task<IReadOnlyCollection<StrategyConfiguration>> GetByStrategyIdAsync(int strategyId, string userId)
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
 
         var debtStrategyConfigurations =
             await context.StrategiesConfigurations
+                         .OfUser(userId)
                          .Where(conf => conf.DebtId != null)
                          .Include(conf => conf.Debt)
                          .Where(conf => conf.StrategyId == strategyId)
@@ -32,6 +26,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
 
         var savingStrategyConfigurations =
             await context.StrategiesConfigurations
+                         .OfUser(userId)
                          .Where(conf => conf.SavingId != null)
                          .Include(conf => conf.Saving)
                          .Where(conf => conf.StrategyId == strategyId)
@@ -39,6 +34,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
 
         var spendingStrategyConfigurations =
             await context.StrategiesConfigurations
+                         .OfUser(userId)
                          .Where(conf => conf.SpendingId != null)
                          .Include(conf => conf.Spending)
                          .Where(conf => conf.StrategyId == strategyId)
@@ -46,6 +42,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
 
         var investmentStrategyConfigurations =
             await context.StrategiesConfigurations
+                         .OfUser(userId)
                          .Where(conf => conf.InvestmentId != null)
                          .Include(conf => conf.Investment)
                          .Where(conf => conf.StrategyId == strategyId)
@@ -58,27 +55,9 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
                                          .ToList();
     }
 
-    public async Task<Models.Strategy> SaveAsync(Models.Strategy strategy)
-    {
-        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
-        if (strategy.Id <= 0)
-        {
-            context.Strategies.Add(strategy);
-            await context.SaveChangesAsync();
+    public async Task<Strategy> SaveAsync(Strategy strategy) => await crudDomainRepository.SaveAsync(strategy, s => s.SetProperty(s => s.Name, s => strategy.Name));
 
-            return strategy;
-        }
-
-        await context.Strategies
-                     .Where(s => s.Id == strategy.Id)
-                     .ExecuteUpdateAsync(s =>
-                        s.SetProperty(s => s.Name, s => strategy.Name)
-                     );
-
-        return strategy;
-    }
-
-    public async Task SaveAsync(IReadOnlyCollection<Models.StrategyConfiguration> strategyConfigurations)
+    public async Task SaveAsync(IReadOnlyCollection<StrategyConfiguration> strategyConfigurations)
     {
         using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
 
@@ -93,7 +72,7 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
 
         int strategyId = strategies[0];
 
-        List<Models.StrategyConfiguration> existingStrategyConfigurations = await context.StrategiesConfigurations.Where(conf => conf.StrategyId == strategyId).ToListAsync();
+        List<StrategyConfiguration> existingStrategyConfigurations = await context.StrategiesConfigurations.Where(conf => conf.StrategyId == strategyId).ToListAsync();
 
         if (existingStrategyConfigurations.Count > 0)
         {
@@ -103,6 +82,15 @@ internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFacto
         context.StrategiesConfigurations.AddRange(strategyConfigurations);
 
         await context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(int strategyId, string userId)
+    {
+        using AppDbContext context = await dbContextFactory.CreateDbContextAsync();
+
+        await context.StrategiesConfigurations.OfUser(userId).Where(d => d.StrategyId == strategyId).ExecuteDeleteAsync();
+
+        await CrudDomainRepository.DeleteAsync<Strategy>(strategyId, userId, context);
     }
 }
 

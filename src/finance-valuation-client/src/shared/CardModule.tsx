@@ -18,23 +18,27 @@ import {
   SpendingsFrequency,
 } from "../features/spendings/spendingsModel";
 import { Stack, Select, MenuItem, Button } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
 
 export const CardModule = ({
   entry,
-  handleUpdate,
+  handleCreateOrUpdate: handleCreateOrUpdate,
+  handleDelete: handleDelete,
   color,
   textColor,
   icon,
   enableEditing,
 }: {
   entry: SavingsDto | InvestmentDto | DebtDto | SpendingsDto;
-  handleUpdate: (
-    id: number,
+  handleCreateOrUpdate: (
+    id: number | undefined,
     name: string,
     amount: number,
     type: string,
     isMandatory: boolean
   ) => void;
+  handleDelete:(entry: SavingsDto | InvestmentDto | DebtDto | SpendingsDto) => void;
   color: string;
   textColor: string;
   icon: ReactNode;
@@ -65,7 +69,7 @@ export const CardModule = ({
   const handleSaveClick = (
     entry: SavingsDto | InvestmentDto | DebtDto | SpendingsDto
   ) => {
-    handleUpdate(entry.id, name, amount, type, isChecked);
+    handleCreateOrUpdate(entry.id, name, amount, type, isChecked);
     setIsEditing(false);
   };
   return (
@@ -229,12 +233,17 @@ export const CardModule = ({
             justifyContent={"flex-start"}
           >
             <Button size="small" onClick={() => handleEditClick(entry)}>
-              <SettingsIcon />
+               {isEditing ? <CloseIcon/> : <SettingsIcon />}
             </Button>
             {isEditing ? (
-              <Button size="small" onClick={() => handleSaveClick(entry)}>
+              <>
+              <Button size="small" onClick={() => handleSaveClick(entry)} style={{color: "green"}}>
                 <SaveAltIcon />
               </Button>
+              <Button size="small" onClick={() => handleDelete(entry)} style={{color: "red"}}>
+                <DeleteIcon />
+              </Button>
+              </>
             ) : (
               <></>
             )}

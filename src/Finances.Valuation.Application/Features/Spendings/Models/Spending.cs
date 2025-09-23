@@ -1,6 +1,8 @@
+using Finances.Valuation.Application.Features.Shared.Models;
+
 namespace Finances.Valuation.Application.Features.Spendings.Models;
 
-internal class Spending
+internal class Spending : IDatabaseEntry, IUserRelated
 {
     public int Id { get; set; }
 
@@ -12,14 +14,31 @@ internal class Spending
 
     public bool IsMandatory { get; set; }
 
-    internal static Spending Create(SpendingDto spendingDto)
+    public required string UserId { get; set; }
+
+    public User.Models.User? User { get; set; }
+
+    internal static Spending Create(SpendingDto spendingDto, string userId)
     {
         return new Spending
         {
             Name = spendingDto.Name,
             Amount = spendingDto.Amount,
             Frequency = spendingDto.Frequency,
-            IsMandatory = spendingDto.IsMandatory
+            IsMandatory = spendingDto.IsMandatory,
+            UserId = userId
+        };
+    }
+    
+    internal static SpendingDto Create(Spending spending)
+    {
+        return new SpendingDto
+        {
+            Id = spending.Id,
+            Name = spending.Name,
+            Amount = spending.Amount,
+            Frequency = spending.Frequency,
+            IsMandatory = spending.IsMandatory
         };
     }
 }

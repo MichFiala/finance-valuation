@@ -2,7 +2,7 @@ export interface IncomeDto{
     id: number;
     name: string;
     amount: number;
-    date: string;
+    date: Date;
 }
 
 export interface IncomesResponseDto {

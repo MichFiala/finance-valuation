@@ -1,16 +1,19 @@
+using System.Security.Authentication;
 using FastEndpoints;
+using Finances.Valuation.Application.Features.Shared.Extensions;
 using Finances.Valuation.Application.Features.Strategies.Get.Models;
 using Finances.Valuation.Application.Features.Strategies.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Strategies.Get;
 
-internal class GetStrategyConfigurationsEndpoint(StrategyRepository strategyRepository) 
+internal class GetStrategyConfigurationsEndpoint(UserManager<User.Models.User> userManager, StrategyRepository strategyRepository) 
     : Endpoint<GetStrategyConfigurationsRequest, GetStrategyConfigurationsResponse>
 {
     public override void Configure()
     {
         Get("/strategies/{StrategyId}");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Gets a single strategy configuration by id";
@@ -20,12 +23,14 @@ internal class GetStrategyConfigurationsEndpoint(StrategyRepository strategyRepo
 
     public override async Task HandleAsync(GetStrategyConfigurationsRequest request, CancellationToken ct)
     {
-        var strategy = await strategyRepository.GetAsync(request.StrategyId);
+        User.Models.User? user = await userManager.FindByEmailAsync(HttpContext.Email()) ?? throw new AuthenticationException($"User not found by email {HttpContext.Email()}");
+
+        var strategy = await strategyRepository.GetAsync(request.StrategyId, user.Id);
 
         if(strategy is null)
             ThrowError("Strategy not found for {request.StrategyId}.");
 
-        IReadOnlyCollection<StrategyConfiguration>? strategyConfigurations = await strategyRepository.GetByStrategyIdAsync(request.StrategyId);
+        IReadOnlyCollection<StrategyConfiguration>? strategyConfigurations = await strategyRepository.GetByStrategyIdAsync(request.StrategyId, user.Id);
 
         if (strategyConfigurations is null)
             ThrowError("Strategy configurations not found for {request.StrategyId}.");

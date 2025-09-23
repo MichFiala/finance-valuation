@@ -1,14 +1,15 @@
 using FastEndpoints;
 using Finances.Valuation.Application.Features.Debts.Models;
-using Finances.Valuation.Application.Features.Debts.Update.Models;
+using Finances.Valuation.Application.Features.Shared.Endpoints.Update;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Debts.Update;
-internal class UpdateDebtEndpoint(DebtRepository debtRepository) : Endpoint<UpdateDebtRequest, EmptyResponse>
+internal class UpdateDebtEndpoint(UpdateHandler updateHandler, DebtRepository debtRepository) : Endpoint<DebtDto, EmptyResponse>
 {
     public override void Configure()
     {
         Post("/debts/{Id}");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Updates an existing debt entry";
@@ -16,19 +17,12 @@ internal class UpdateDebtEndpoint(DebtRepository debtRepository) : Endpoint<Upda
         });
     }
 
-    public override async Task<EmptyResponse> HandleAsync(UpdateDebtRequest request, CancellationToken ct)
+    public override async Task<EmptyResponse> HandleAsync(DebtDto request, CancellationToken ct)
     {
-        if (request is null)
+        return await updateHandler.HandleAsync(request, (debt) =>
         {
-            throw new ArgumentException("UpdateDebtRequest cannot be null", nameof(request));
-        }
-        Debt debt = await debtRepository.GetAsync(request.Id) ?? throw new ArgumentException($"Debt with id {Route<int>("id")} not found", nameof(request));
-
-        debt.Name = request.Name;
-        debt.Amount = request.Amount;
-
-        await debtRepository.SaveAsync(debt);
-
-        return new EmptyResponse();
+            debt.Name = request.Name;
+            debt.Amount = request.Amount;
+        }, debtRepository, HttpContext);
     }
 }

@@ -1,6 +1,8 @@
+using Finances.Valuation.Application.Features.Shared.Models;
+
 namespace Finances.Valuation.Application.Features.Strategies.Models;
 
-internal class StrategyConfiguration
+internal class StrategyConfiguration : IUserRelated
 {
     public int Id { get; set; }
 
@@ -26,6 +28,10 @@ internal class StrategyConfiguration
 
     public decimal? MonthlyContributionPercentage { get; set; }
 
+    public required string UserId { get; set; }
+
+    public User.Models.User? User { get; set; }    
+
     private static IReadOnlyDictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>> AssingFunctions = new Dictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>>
     {
         { StrategyConfigurationType.Debt, (strategyConfiguration, referenceId) => strategyConfiguration.DebtId = referenceId},
@@ -41,15 +47,17 @@ internal class StrategyConfiguration
         int referenceId,
         int priority,
         decimal? monthlyContributionAmount,
-        decimal? monthlyContributionPercentage)
+        decimal? monthlyContributionPercentage,
+        string userId)
     {
-        StrategyConfiguration strategyConfiguration = new StrategyConfiguration
+        StrategyConfiguration strategyConfiguration = new()
         {
             StrategyId = strategyId,
             Type = type,
             Priority = priority,
             MonthlyContributionAmount = monthlyContributionAmount,
-            MonthlyContributionPercentage = monthlyContributionPercentage
+            MonthlyContributionPercentage = monthlyContributionPercentage,
+            UserId = userId
         };
 
         if (AssingFunctions.TryGetValue(type, out Action<StrategyConfiguration, int>? assignFunction))
@@ -61,5 +69,5 @@ internal class StrategyConfiguration
     }
 
     public static StrategyConfiguration Create(Strategy strategy, StrategyConfigurationDto itemDto, int priority) =>
-        Create(strategy.Id, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage);
+        Create(strategy.Id, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage, strategy.UserId);
 }

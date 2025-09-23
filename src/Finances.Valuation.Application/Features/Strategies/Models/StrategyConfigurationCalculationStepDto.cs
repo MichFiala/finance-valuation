@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using FastEndpoints;
 
 namespace Finances.Valuation.Application.Features.Strategies.Models;
 

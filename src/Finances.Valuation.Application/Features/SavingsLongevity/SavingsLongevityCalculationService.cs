@@ -14,11 +14,11 @@ internal class SavingsLongevityCalculationService(
     SpendingRepository spendingRepository,
     DebtRepository debtRepository)
 {
-    public async Task<int> CalculateMonthsOfLongevityAsync()
+    public async Task<int> CalculateMonthsOfLongevityAsync(string userId)
     {
-        IReadOnlyCollection<Spending> totalSpendings = await spendingRepository.GetMandatoryAsync();
-        IReadOnlyCollection<Investments.Models.Investment> investments = await investmentRepository.GetAsync();
-        IReadOnlyCollection<Debt> debts = await debtRepository.GetAsync();
+        IReadOnlyCollection<Spending> totalSpendings = await spendingRepository.GetMandatoryAsync(userId);
+        IReadOnlyCollection<Investments.Models.Investment> investments = await investmentRepository.GetAsync(userId);
+        IReadOnlyCollection<Debt> debts = await debtRepository.GetAsync(userId);
 
         decimal yearlySpendingsMonthlySpreaded = totalSpendings
             .Where(s => s.Frequency == Frequency.Yearly)
@@ -32,7 +32,7 @@ internal class SavingsLongevityCalculationService(
             .Where(s => s.Frequency == Frequency.Monthly)
             .Sum(s => s.Amount);
 
-        var totalSavings = await savingRepository.GetAsync();
+        var totalSavings = await savingRepository.GetAsync(userId);
 
         decimal savingsAmount = totalSavings.Sum(s => s.Amount);
         decimal investmentsAmount = investments.Sum(i => i.Amount);

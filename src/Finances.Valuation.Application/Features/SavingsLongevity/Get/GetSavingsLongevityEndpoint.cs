@@ -1,15 +1,20 @@
+using System.Security.Authentication;
 using FastEndpoints;
 using Finances.Valuation.Application.Features.SavingsLongevity.Get.Models;
+using Finances.Valuation.Application.Features.Shared.Extensions;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.SavingsLongevity.Get;
 
-internal class GetSavingsLongevityEndpoint(SavingsLongevityCalculationService longevityService)
+internal class GetSavingsLongevityEndpoint(
+    UserManager<User.Models.User> userManager,
+    SavingsLongevityCalculationService longevityService)
     : Endpoint<EmptyRequest, GetSavingsLongevityResponse>
 {
     public override void Configure()
     {
         Get("/savings-longevity");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Returns how many months your savings and investments will last based on spendings.";
@@ -19,7 +24,9 @@ internal class GetSavingsLongevityEndpoint(SavingsLongevityCalculationService lo
 
     public override async Task HandleAsync(EmptyRequest emptyRequest, CancellationToken ct)
     {
-        int longevity = await longevityService.CalculateMonthsOfLongevityAsync();
+        User.Models.User? user = await userManager.FindByEmailAsync(HttpContext.Email()) ?? throw new AuthenticationException($"User not found by email {HttpContext.Email()}");        
+
+        int longevity = await longevityService.CalculateMonthsOfLongevityAsync(user.Id);
 
         var grade = SavingsLongevityCalculationService.ValuateGrade(longevity);
 

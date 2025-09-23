@@ -1,14 +1,16 @@
 using FastEndpoints;
 using Finances.Valuation.Application.Features.Savings.Models;
+using Finances.Valuation.Application.Features.Shared.Endpoints.Create;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Savings.Create;
 
-internal class CreateSavingEndpoint(SavingRepository savingRepository) : Endpoint<List<SavingDto>, List<SavingDto>>
+internal class CreateSavingEndpoint(CreateHandler createHandler, SavingRepository savingRepository) : Endpoint<SavingDto, EmptyResponse>
 {
     public override void Configure()
     {
         Post("/savings");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Creates a new saving entry";
@@ -16,24 +18,6 @@ internal class CreateSavingEndpoint(SavingRepository savingRepository) : Endpoin
         });
     }
 
-    public override async Task<List<SavingDto>> HandleAsync(List<SavingDto> savingDtos, CancellationToken ct)
-    {
-        if (savingDtos == null || savingDtos.Count == 0)
-        {
-            throw new ArgumentException("SavingDto list cannot be null or empty", nameof(savingDtos));
-        }
-
-        var savings = new List<Saving>();
-
-        foreach (var savingDto in savingDtos)
-        {
-            var saving = Saving.Create(savingDto);
-            
-            await savingRepository.SaveAsync(saving);
-            
-            savings.Add(saving);
-        }
-
-        return savings.Select(SavingDto.Create).ToList();
-    }
+    public override async Task<EmptyResponse> HandleAsync(SavingDto request, CancellationToken ct)
+        => await createHandler.HandleAsync(request, Saving.Create, savingRepository, HttpContext);    
 }

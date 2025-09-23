@@ -1,25 +1,20 @@
+import { create, deleteEntry, fetchEntries, update } from "../../shared/crudApi";
 import { SavingsResponseDto } from "./savingsModel";
 
+const Endpoint = "savings";
+
 export async function fetchSavings() {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'http://localhost:5153';
-  const response = await fetch(`${apiUrl}/savings`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch savings');
-  }
-  return response.json() as Promise<SavingsResponseDto>;
+  return fetchEntries(Endpoint) as Promise<SavingsResponseDto>;
+}
+
+export async function createSaving(name: string, amount: number) {
+  create(Endpoint, { name, amount });
 }
 
 export async function updateSaving(id: number, name: string, amount: number) {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'http://localhost:5153';
-  const response = await fetch(`${apiUrl}/savings/${id}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ name, amount }),
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to update saving');
-  }
+  update(Endpoint, id, { name, amount });
+}
+
+export async function deleteSaving(id: number) {
+  deleteEntry(Endpoint, id);
 }

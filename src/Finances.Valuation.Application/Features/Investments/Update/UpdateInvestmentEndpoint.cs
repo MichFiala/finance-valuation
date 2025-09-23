@@ -1,15 +1,16 @@
 using FastEndpoints;
 using Finances.Valuation.Application.Features.Investments.Models;
-using Finances.Valuation.Application.Features.Investments.Update.Models;
+using Finances.Valuation.Application.Features.Shared.Endpoints.Update;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Investments.Update;
 
-internal class UpdateInvestmentEndpoint(InvestmentRepository investmentRepository) : Endpoint<UpdateInvestmentRequest, EmptyResponse>
+internal class UpdateInvestmentEndpoint(UpdateHandler updateHandler, InvestmentRepository investmentRepository) : Endpoint<InvestmentDto, EmptyResponse>
 {
     public override void Configure()
     {
         Post("/investments/{Id}");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Updates an existing investment entry";
@@ -17,19 +18,12 @@ internal class UpdateInvestmentEndpoint(InvestmentRepository investmentRepositor
         });
     }
 
-    public override async Task<EmptyResponse> HandleAsync(UpdateInvestmentRequest request, CancellationToken ct)
+    public override async Task<EmptyResponse> HandleAsync(InvestmentDto request, CancellationToken ct)
     {
-        if (request is null)
+        return await updateHandler.HandleAsync(request, (investment) =>
         {
-            throw new ArgumentException("UpdateInvestmentRequest cannot be null", nameof(request));
-        }
-        Investment investment = await investmentRepository.GetAsync(request.Id) ?? throw new ArgumentException($"Investment with id {Route<int>("id")} not found", nameof(request));
-
-        investment.Name = request.Name;
-        investment.Amount = request.Amount;
-
-        await investmentRepository.SaveAsync(investment);
-
-        return new EmptyResponse();
+            investment.Name = request.Name;
+            investment.Amount = request.Amount;
+        }, investmentRepository, HttpContext);
     }
 }

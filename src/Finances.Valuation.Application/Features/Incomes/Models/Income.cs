@@ -1,6 +1,8 @@
+using Finances.Valuation.Application.Features.Shared.Models;
+
 namespace Finances.Valuation.Application.Features.Incomes.Models;
 
-internal class Income
+internal class Income : IDatabaseEntry, IUserRelated
 {
     public int Id { get; set; }
 
@@ -10,13 +12,18 @@ internal class Income
 
     public DateOnly Date { get; set; }
 
-    internal static Income Create(IncomeDto incomeDto)
+    public required string UserId { get; set; }
+
+    public User.Models.User? User { get; set; }
+
+    internal static Income Create(IncomeDto incomeDto, string userId)
     {
         return new Income
         {
             Name = incomeDto.Name,
             Amount = incomeDto.Amount,
-            Date = incomeDto.Date
+            Date = incomeDto.Date,
+            UserId = userId,
         };
     }
 }

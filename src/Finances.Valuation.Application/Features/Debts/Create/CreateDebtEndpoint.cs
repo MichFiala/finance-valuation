@@ -1,14 +1,16 @@
 using FastEndpoints;
 using Finances.Valuation.Application.Features.Debts.Models;
+using Finances.Valuation.Application.Features.Shared.Endpoints.Create;
+using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.Debts.Create;
 
-internal class CreateDebtEndpoint(DebtRepository debtRepository) : Endpoint<List<DebtDto>, List<DebtDto>>
+internal class CreateDebtEndpoint(CreateHandler createHandler, DebtRepository debtRepository) : Endpoint<DebtDto, EmptyResponse>
 {
     public override void Configure()
     {
         Post("/debts");
-        AllowAnonymous();
+        AuthSchemes(IdentityConstants.ApplicationScheme);
         Summary(s =>
         {
             s.Summary = "Creates a new debt";
@@ -16,22 +18,6 @@ internal class CreateDebtEndpoint(DebtRepository debtRepository) : Endpoint<List
         });
     }
 
-    public override async Task<IReadOnlyCollection<DebtDto>> HandleAsync(List<DebtDto> debtDtos, CancellationToken ct)
-    {
-        if (debtDtos == null || debtDtos.Count == 0)
-        {
-            throw new ArgumentException("DebtDto list cannot be null or empty", nameof(debtDtos));
-        }
-
-        var debts = new List<Debt>();
-
-        foreach (var debtDto in debtDtos)
-        {
-            var debt = Debt.Create(debtDto);
-            await debtRepository.SaveAsync(debt);
-            debts.Add(debt);
-        }
-
-        return debts.Select(DebtDto.Create).ToList();
-    }
+    public override async Task<EmptyResponse> HandleAsync(DebtDto request, CancellationToken ct)
+        => await createHandler.HandleAsync(request, Debt.Create, debtRepository, HttpContext);
 }

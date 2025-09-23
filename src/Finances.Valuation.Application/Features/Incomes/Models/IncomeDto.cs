@@ -1,6 +1,8 @@
+using Finances.Valuation.Application.Features.Shared.Models;
+
 namespace Finances.Valuation.Application.Features.Incomes.Models;
 
-public class IncomeDto
+public class IncomeDto : IEntityDto
 {
     public int Id { get; set; }
     public required string Name { get; set; }

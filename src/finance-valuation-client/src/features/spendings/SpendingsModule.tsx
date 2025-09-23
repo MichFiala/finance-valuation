@@ -12,6 +12,7 @@ import {
   spendingYearlyColor,
   spendingYearlyTextColor,
 } from "./spendingStylesSettings";
+import AddIcon from '@mui/icons-material/Add';
 
 export const SpendingsModule = (
   { enableEditing }: { enableEditing: boolean } = { enableEditing: false }
@@ -35,9 +36,6 @@ export const SpendingsModule = (
       });
   }, [reloadCounter]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
   const handleCreateOrUpdate = async (
     id: number | undefined,
     name: string,
@@ -45,11 +43,21 @@ export const SpendingsModule = (
     type: string,
     isMandatory: boolean
   ) => {
-    if(id !== undefined){
-      await updateSpending(id, name, amount, type as SpendingsFrequency, isMandatory);
-    }
-    else {
-      await createSpending(name, amount, type as SpendingsFrequency, isMandatory);
+    if (id !== undefined) {
+      await updateSpending(
+        id,
+        name,
+        amount,
+        type as SpendingsFrequency,
+        isMandatory
+      );
+    } else {
+      await createSpending(
+        name,
+        amount,
+        type as SpendingsFrequency,
+        isMandatory
+      );
     }
 
     setReloadCounter(reloadCounter + 1);
@@ -63,6 +71,19 @@ export const SpendingsModule = (
     } as SpendingsDto;
     setSpendings([...spendings, emptySpending]);
   };
+
+  const handleDelete = async (entry: any) => {
+    if ((entry as SpendingsDto).id === null) {
+      setSpendings([...spendings.filter((s) => s.id !== entry)]);
+      return;
+    }
+
+    setReloadCounter(reloadCounter + 1);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <>
       <Typography variant="h6" component="h6">
@@ -72,12 +93,15 @@ export const SpendingsModule = (
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Monthly")
-          .sort((a, b) => a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1)
+          .sort((a, b) =>
+            a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
+          )
           .map((spending) => (
             <Grid key={`Spending-${spending.id}`} size={3}>
               <CardModule
                 entry={spending}
-                handleUpdate={handleCreateOrUpdate}
+                handleCreateOrUpdate={handleCreateOrUpdate}
+                handleDelete={handleDelete}
                 color={spendingMonthlyColor}
                 textColor={spendingMonthlyTextColor}
                 icon={<SavingsIcon />}
@@ -85,10 +109,13 @@ export const SpendingsModule = (
               />
             </Grid>
           ))}
-        <Grid size={3} textAlign={'left'} alignContent={'start'}>
+        <Grid size={3} textAlign={"left"} alignContent={"start"}>
           <Button
             size="large"
-            style={{ backgroundColor: spendingMonthlyColor, color: spendingMonthlyTextColor }}
+            style={{
+              backgroundColor: spendingMonthlyColor,
+              color: spendingMonthlyTextColor,
+            }}
             onClick={() =>
               handleCreateEmptySpending("Monthly" as SpendingsFrequency)
             }
@@ -105,12 +132,15 @@ export const SpendingsModule = (
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Quaterly")
-          .sort((a, b) => a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1)
+          .sort((a, b) =>
+            a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
+          )
           .map((spending) => (
             <Grid key={`Spending-${spending.id}`} size={3}>
               <CardModule
                 entry={spending}
-                handleUpdate={handleCreateOrUpdate}
+                handleCreateOrUpdate={handleCreateOrUpdate}
+                handleDelete={handleDelete}
                 color={spendingQuarterlyColor}
                 textColor={spendingQuarterlyTextColor}
                 icon={<SavingsIcon />}
@@ -118,10 +148,13 @@ export const SpendingsModule = (
               />
             </Grid>
           ))}
-        <Grid size={3} textAlign={'left'} alignContent={'start'}>
+        <Grid size={3} textAlign={"left"} alignContent={"start"}>
           <Button
             size="large"
-            style={{ backgroundColor: spendingQuarterlyColor, color: spendingQuarterlyTextColor }}
+            style={{
+              backgroundColor: spendingQuarterlyColor,
+              color: spendingQuarterlyTextColor,
+            }}
             onClick={() =>
               handleCreateEmptySpending("Quaterly" as SpendingsFrequency)
             }
@@ -137,12 +170,15 @@ export const SpendingsModule = (
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Yearly")
-          .sort((a, b) => a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1)          
+          .sort((a, b) =>
+            a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
+          )
           .map((spending) => (
             <Grid key={`Spending-${spending.id}`} size={3}>
               <CardModule
                 entry={spending}
-                handleUpdate={handleCreateOrUpdate}
+                handleCreateOrUpdate={handleCreateOrUpdate}
+                handleDelete={handleDelete}
                 color={spendingYearlyColor}
                 textColor={spendingYearlyTextColor}
                 icon={<SavingsIcon />}
@@ -150,17 +186,22 @@ export const SpendingsModule = (
               />
             </Grid>
           ))}
-          <Grid size={3} textAlign={'left'} alignContent={'start'}>
-          <Button
-            size="large"
-            style={{ backgroundColor: spendingYearlyColor, color: spendingYearlyTextColor }}
-            onClick={() =>
-              handleCreateEmptySpending("Yearly" as SpendingsFrequency)
-            }
-          >
-            Add new
-          </Button>
-        </Grid>
+        {enableEditing && (
+          <Grid size={3} textAlign={"left"} alignContent={"start"}>
+            <Button
+              size="large"
+              style={{
+                backgroundColor: spendingYearlyColor,
+                color: spendingYearlyTextColor,
+              }}
+              onClick={() =>
+                handleCreateEmptySpending("Yearly" as SpendingsFrequency)
+              }
+            >
+              <AddIcon></AddIcon>
+            </Button>
+          </Grid>
+        )}
       </Grid>
     </>
   );

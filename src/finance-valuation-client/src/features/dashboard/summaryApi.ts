@@ -1,6 +1,9 @@
 export async function fetchSummary() {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'http://localhost:5153';
-  const response = await fetch(`${apiUrl}/summary`);
+  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const response = await fetch(`${apiUrl}/summary`,{
+    method: "GET",
+    credentials: "include",
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch summary');
   }
@@ -8,8 +11,11 @@ export async function fetchSummary() {
 }
 
 export async function fetchSavingsLongevity() {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'http://localhost:5153';
-  const response = await fetch(`${apiUrl}/savings-longevity`);
+  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const response = await fetch(`${apiUrl}/savings-longevity`,{
+    method: "GET",
+    credentials: "include",
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch savings longevity');
   }

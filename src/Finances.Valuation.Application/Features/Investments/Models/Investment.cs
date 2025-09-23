@@ -1,6 +1,8 @@
+using Finances.Valuation.Application.Features.Shared.Models;
+
 namespace Finances.Valuation.Application.Features.Investments.Models;
 
-internal class Investment
+internal class Investment : IDatabaseEntry, IUserRelated
 {
     public int Id { get; set; }
 
@@ -8,12 +10,17 @@ internal class Investment
 
     public decimal Amount { get; set; }
 
-    internal static Investment Create(InvestmentDto investmentDto)
+    public required string UserId { get; set; }
+
+    public User.Models.User? User { get; set; }    
+
+    internal static Investment Create(InvestmentDto investmentDto, string userId)
     {
         return new Investment
         {
             Name = investmentDto.Name,
-            Amount = investmentDto.Amount
+            Amount = investmentDto.Amount,
+            UserId = userId,
         };
     }
 }

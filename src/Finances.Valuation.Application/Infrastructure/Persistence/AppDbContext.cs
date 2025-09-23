@@ -4,11 +4,13 @@ using Finances.Valuation.Application.Features.Investments.Models;
 using Finances.Valuation.Application.Features.Savings.Models;
 using Finances.Valuation.Application.Features.Spendings.Models;
 using Finances.Valuation.Application.Features.Strategies.Models;
+using Finances.Valuation.Application.Features.User.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Finances.Valuation.Application.Infrastructure.Persistence;
 
-internal class AppDbContext : DbContext
+internal class AppDbContext : IdentityDbContext<User>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -33,6 +35,8 @@ internal class AppDbContext : DbContext
     {
         modelBuilder.HasDefaultSchema("fin");
 
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Debt>(mb =>
         {
             mb.ToTable("debts");
@@ -42,6 +46,10 @@ internal class AppDbContext : DbContext
               .HasForeignKey(d => d.SavingId)
               .OnDelete(DeleteBehavior.SetNull);
 
+            mb.HasOne(e => e.User)
+              .WithMany()
+              .HasForeignKey(e => e.UserId);
+
             mb.Property(p => p.DebtType)
               .HasConversion<string>();
         });
@@ -50,12 +58,20 @@ internal class AppDbContext : DbContext
         {
             mb.ToTable("incomes");
             mb.HasKey(i => i.Id);
+
+            mb.HasOne(e => e.User)
+              .WithMany()
+              .HasForeignKey(e => e.UserId);            
         });
 
         modelBuilder.Entity<Saving>(mb =>
         {
             mb.ToTable("savings");
             mb.HasKey(s => s.Id);
+
+            mb.HasOne(e => e.User)
+              .WithMany()
+              .HasForeignKey(e => e.UserId);            
         });
 
         modelBuilder.Entity<Spending>(mb =>
@@ -64,12 +80,20 @@ internal class AppDbContext : DbContext
             mb.HasKey(s => s.Id);
             mb.Property(p => p.Frequency)
               .HasConversion<string>();
+
+            mb.HasOne(e => e.User)
+              .WithMany()
+              .HasForeignKey(e => e.UserId);              
         });
 
         modelBuilder.Entity<Strategy>(mb =>
         {
             mb.ToTable("strategies");
             mb.HasKey(s => s.Id);
+
+            mb.HasOne(e => e.User)
+              .WithMany()
+              .HasForeignKey(e => e.UserId);            
         });
 
         modelBuilder.Entity<StrategyConfiguration>(mb =>
@@ -78,12 +102,20 @@ internal class AppDbContext : DbContext
             mb.HasKey(s => s.Id);
             mb.Property(p => p.Type)
               .HasConversion<string>();
+
+            mb.HasOne(e => e.User)
+              .WithMany()
+              .HasForeignKey(e => e.UserId);              
         });
 
         modelBuilder.Entity<Investment>(mb =>
         {
             mb.ToTable("investments");
             mb.HasKey(i => i.Id);
+
+            mb.HasOne(e => e.User)
+              .WithMany()
+              .HasForeignKey(e => e.UserId);            
         });
     }
 }

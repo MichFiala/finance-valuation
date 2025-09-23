@@ -1,6 +1,8 @@
+using Finances.Valuation.Application.Features.Shared.Models;
+
 namespace Finances.Valuation.Application.Features.Savings.Models;
 
-public class SavingDto
+public class SavingDto : IEntityDto
 {
     public int Id { get; set; }
     public required string Name { get; set; }
