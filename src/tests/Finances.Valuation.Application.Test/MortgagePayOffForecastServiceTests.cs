@@ -1,4 +1,4 @@
-using Finances.Valuation.Application.Features.Debt;
+using Finances.Valuation.Application.Features.Debts;
 
 namespace Finances.Valuation.Application.Test;
 
@@ -10,14 +10,16 @@ public class MortgagePayOffForecastServiceTests
     {
         var service = new MortgagePayOffForecastService();
 
-        var debt = new Features.Debt.Models.Debt
+        var debt = new Features.Debts.Models.Debt
         {
+            UserId = string.Empty,
             Name = "Mortgage",
             Amount = 2_787_377.81M,
             Interest = 5.19M,
             Payment = 15_159M,
             Saving = new Features.Savings.Models.Saving
             {
+                UserId = string.Empty,
                 Name = "Offset saving",
                 Amount = 783_092M,
                 ExpectedMonthlyContributionAmount = 0M
@@ -35,14 +37,16 @@ public class MortgagePayOffForecastServiceTests
     {
         var service = new MortgagePayOffForecastService();
 
-        var debt = new Features.Debt.Models.Debt
+        var debt = new Features.Debts.Models.Debt
         {
+            UserId = string.Empty,
             Name = "Mortgage",
             Amount = 2_787_377.81M,
             Interest = 5.19M,
             Payment = 15_159M,
             Saving = new Features.Savings.Models.Saving
             {
+                UserId = string.Empty,
                 Name = "Offset saving",
                 Amount = 783_092M,
                 ExpectedMonthlyContributionAmount = 27_500M
