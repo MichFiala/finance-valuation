@@ -4,7 +4,9 @@
 ## Get latest from `dotnet new gitignore`
 
 # Ignore client app
-/wwwroot/*
+wwwroot/*
+
+!wwwroot/.gitkeep 
 
 # Ignore database
 *.db
