@@ -43,11 +43,11 @@ jobs:
       - name: Publish
         run: dotnet publish ./finance-valuation.sln --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
       - name: Deployment
-        uses: Azure/webapps-deploy@v2.2.17
+        uses: Azure/webapps-deploy@v3.0.6
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
           
 
       
