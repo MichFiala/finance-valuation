@@ -74,6 +74,8 @@ builder.Services.AddTransient<InvestmentRepository>();
 builder.Services.AddTransient<SavingsLongevityCalculationService>();
 
 var app = builder.Build();
+
+app.UseStaticFiles();
 app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
@@ -87,6 +89,8 @@ app.UseFastEndpoints(config =>
 app.UseSwaggerGen();
 
 app.MapIdentityApi<User>();
+
+app.MapFallbackToFile("index.html");
 
 
 app.Run();

@@ -3,6 +3,9 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
+# Ignore client app
+/wwwroot/*
+
 # Ignore database
 *.db
 *.Development.json
