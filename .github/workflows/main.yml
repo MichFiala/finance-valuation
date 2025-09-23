@@ -44,13 +44,19 @@ jobs:
         run: dotnet publish ./finance-valuation.sln --configuration Release --no-build --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
       - name: List publish folder
         run: ls -la ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+      - name: List publish folder wwwroot
+        run: ls -la ./publish/wwwroot
         
-      - name: Deployment
-        uses: Azure/webapps-deploy@v3.0.6
+      - name: Zip publish folder
+        run: cd ./publish && zip -r ../app.zip .
+      
+      - name: Deploy to Azure
+        uses: Azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          package: ./app.zip
           
 
       
