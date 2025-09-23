@@ -35,13 +35,13 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(IdentityConstants.ApplicationScheme, options =>
 {
-    options.Cookie.SameSite = SameSiteMode.None; // povolit cross-origin
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // nutné pro HTTPS
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 })
 .AddGoogle(googleOptions =>
 {
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
     googleOptions.SignInScheme = IdentityConstants.ApplicationScheme;
 });
 builder.Services.AddAuthorization();

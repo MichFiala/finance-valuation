@@ -16,13 +16,13 @@ internal class GoogleCallbackEndpoint(UserManager<User.Models.User> userManager,
 
     public override async Task<RedirectHttpResult> ExecuteAsync(CancellationToken ct)
     {
-        string returnUrl = Query<string>("returnUrl");
+        string returnUrl = Query<string>("returnUrl")!;
 
         var result = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
 
         var email = result.Principal?.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
 
-        var user = await userManager.FindByEmailAsync(email);
+        var user = await userManager.FindByEmailAsync(email!);
         if (user == null)
         {
             user = new User.Models.User

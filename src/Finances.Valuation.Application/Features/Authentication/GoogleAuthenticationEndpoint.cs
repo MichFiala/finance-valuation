@@ -15,7 +15,7 @@ internal class GoogleAuthenticationEndpoint : EndpointWithoutRequest<ChallengeHt
 
     public override async Task<ChallengeHttpResult> ExecuteAsync(CancellationToken ct)
     {
-        string returnUrl = Query<string>("returnUrl");
+        string returnUrl = Query<string>("returnUrl")!;
 
         var props = new AuthenticationProperties
         {
