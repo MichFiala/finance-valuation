@@ -9,8 +9,6 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import SavingsIcon from "@mui/icons-material/Savings";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import {
-  Avatar,
-  Button,
   List,
   ListItem,
   ListItemButton,
@@ -19,7 +17,6 @@ import {
   Stack,
   Switch,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import DashboardPage from "./features/dashboard/DashboardPage";
 import { useEffect, useState } from "react";

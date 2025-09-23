@@ -7,7 +7,6 @@ import {
   DataGrid,
   GridColDef,
   GridRow,
-  GridRowClassNameParams,
   GridRowProps,
 } from "@mui/x-data-grid";
 import {
@@ -140,7 +139,7 @@ export default function StrategySettingsComponent({strategyResponse}: {strategyR
 
   useEffect(() => {
       setRows(strategyResponse.strategyConfigurations || []);
-  }, []);
+  }, [strategyResponse]);
 
   return (
         <DndContext

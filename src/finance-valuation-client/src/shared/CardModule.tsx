@@ -23,8 +23,8 @@ import CloseIcon from '@mui/icons-material/Close';
 
 export const CardModule = ({
   entry,
-  handleCreateOrUpdate: handleCreateOrUpdate,
-  handleDelete: handleDelete,
+  handleCreateOrUpdate,
+  handleDelete,
   color,
   textColor,
   icon,
