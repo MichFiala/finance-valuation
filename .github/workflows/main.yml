@@ -10,6 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install React dependencies
+        run: npm ci
+        working-directory: ./src/finance-valuation-client 
+
+      - name: Build React app
+        run: npm run build
+        working-directory: ./src/finance-valuation-client 
+
+      - name: Copy React build to wwwroot
+        run: |
+          rm -rf ./src/Finances.Valuation.Application/wwwroot/*
+          cp -r ./src/finance-valuation-client/build/* ./src/Finances.Valuation.Application/wwwroot/
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
