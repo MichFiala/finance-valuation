@@ -37,5 +37,7 @@ jobs:
         run: dotnet restore ./finance-valuation.sln
       - name: Build
         run: dotnet build ./finance-valuation.sln --configuration Release --no-restore
+      - name: Publish
+        run: dotnet publish ./finance-valuation.sln --configuration Release --no-build
       
       
