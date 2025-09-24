@@ -41,9 +41,11 @@ internal class SavingsLongevityCalculationService(
         decimal remainingSavings = savingsAmount + investmentsAmount;
 
         int monthsOfLongevity = 0;
-        DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+        DateTime currentDate = DateTime.Now;
 
-        while (remainingSavings > 0)
+        const int maximumMonths = 12 * 100; // 100 years 
+
+        while (remainingSavings > 0 && monthsOfLongevity <= maximumMonths)
         {
             remainingSavings -= monthlySpendings;
             remainingSavings -= yearlySpendingsMonthlySpreaded;
@@ -52,6 +54,7 @@ internal class SavingsLongevityCalculationService(
             remainingSavings -= debtsPayments;
 
             currentDate = currentDate.AddMonths(1);
+
             monthsOfLongevity++;
         }
         return monthsOfLongevity;
