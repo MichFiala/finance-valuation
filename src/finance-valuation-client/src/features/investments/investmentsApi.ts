@@ -7,15 +7,15 @@ export async function fetchInvestments() {
   return fetchEntries(Endpoint) as Promise<InvestmentsResponseDto>;
 }
 
-export async function createInvestment(name: string, amount: number) {
-  create(Endpoint, { name, amount });
+export function createInvestment(name: string, amount: number) {
+  return create(Endpoint, { name, amount });
 }
 
-export async function updateInvestment(id: number, name: string, amount: number) {
-  update(Endpoint, id, { name, amount });
+export function updateInvestment(id: number, name: string, amount: number) {
+  return update(Endpoint, id, { name, amount });
 }
 
-export async function deleteInvestment(id: number) {
-  deleteEntry(Endpoint, id);
+export function deleteInvestment(id: number) {
+  return deleteEntry(Endpoint, id);
 }
 

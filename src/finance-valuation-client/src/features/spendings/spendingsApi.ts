@@ -3,19 +3,19 @@ import { SpendingsFrequency, SpendingsResponseDto } from "./spendingsModel";
 
 const Endpoint = "spendings";
 
-export async function fetchSpendings() {
+export function fetchSpendings() {
   return fetchEntries(Endpoint) as Promise<SpendingsResponseDto>;
 }
 
-export async function createSpending(name: string, amount: number, frequency: SpendingsFrequency,  isMandatory: boolean) {
-  create(Endpoint, { name, amount, frequency, isMandatory });
+export function createSpending(name: string, amount: number, frequency: SpendingsFrequency,  isMandatory: boolean) {
+  return create(Endpoint, { name, amount, frequency, isMandatory });
 }
 
-export async function updateSpending(id: number, name: string, amount: number, frequency: SpendingsFrequency, isMandatory: boolean) {
-  update(Endpoint, id, { name, amount, frequency, isMandatory });
+export function updateSpending(id: number, name: string, amount: number, frequency: SpendingsFrequency, isMandatory: boolean) {
+  return update(Endpoint, id, { name, amount, frequency, isMandatory });
 }
 
-export async function deleteSpending(id: number) {
-  deleteEntry(Endpoint, id);
+export function deleteSpending(id: number) {
+  return deleteEntry(Endpoint, id);
 }
 

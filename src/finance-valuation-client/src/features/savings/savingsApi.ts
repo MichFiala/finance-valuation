@@ -4,17 +4,17 @@ import { SavingsResponseDto } from "./savingsModel";
 const Endpoint = "savings";
 
 export async function fetchSavings() {
-  return fetchEntries(Endpoint) as Promise<SavingsResponseDto>;
+  return await fetchEntries(Endpoint) as Promise<SavingsResponseDto>;
 }
 
-export async function createSaving(name: string, amount: number) {
-  create(Endpoint, { name, amount });
+export function createSaving(name: string, amount: number) {
+  return create(Endpoint, { name, amount });
 }
 
-export async function updateSaving(id: number, name: string, amount: number) {
-  update(Endpoint, id, { name, amount });
+export function updateSaving(id: number, name: string, amount: number) {
+  return update(Endpoint, id, { name, amount });
 }
 
-export async function deleteSaving(id: number) {
-  deleteEntry(Endpoint, id);
+export function deleteSaving(id: number) {
+  return deleteEntry(Endpoint, id);
 }
