@@ -16,6 +16,7 @@ using Finances.Valuation.Application.Features.User.Models;
 using Finances.Valuation.Application.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsDevelopment())
@@ -26,6 +27,19 @@ if (builder.Environment.IsDevelopment())
             options.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
         });
     });
+
+var currentDir = AppContext.BaseDirectory;
+var logPath = Path.Combine(currentDir, "finance-valuation.log");
+
+// Nastavení Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console() // logy do Azure Log Stream
+    .WriteTo.File(logPath, rollingInterval: RollingInterval.Day) // logy do souboru
+    .CreateLogger();
+
+builder.Host.UseSerilog(); // použít Serilog místo default loggeru
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -74,6 +88,10 @@ builder.Services.AddTransient<InvestmentRepository>();
 builder.Services.AddTransient<SavingsLongevityCalculationService>();
 
 var app = builder.Build();
+
+var logger = app.Services.GetService<ILogger<Program>>();
+
+logger.LogInformation("Application started with gid: {id}", builder.Configuration["Authentication:Google:ClientId"]);
 
 app.UseStaticFiles();
 
