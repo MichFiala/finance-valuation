@@ -2,7 +2,7 @@ import { CalculatedStrategyResponseDto } from "./strategyCalculatedModel";
 import { StrategyDto } from "./strategyModel";
 
 export async function fetchStrategy() {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl =  process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/strategies/1`,
     {
     method: "GET",
@@ -15,7 +15,7 @@ export async function fetchStrategy() {
 }
 
 export async function fetchCalculatedStrategy(incomeId: number) {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl =  process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/strategies/1/calculate?incomeId=${incomeId}`,{
     method: "GET",
     credentials: "include",

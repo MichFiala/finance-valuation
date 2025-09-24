@@ -19,7 +19,7 @@ internal class GoogleAuthenticationEndpoint : EndpointWithoutRequest<ChallengeHt
 
         var props = new AuthenticationProperties
         {
-            RedirectUri = $"https://localhost:7089/login/google/callback?returnUrl={returnUrl}"
+            RedirectUri = $"/login/google/callback?returnUrl={returnUrl}"
         };
 
         await Task.CompletedTask;
