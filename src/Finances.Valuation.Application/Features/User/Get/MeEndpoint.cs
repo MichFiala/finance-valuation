@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Finances.Valuation.Application.Features.User.Get;
 
-internal class MeEndpoint() : EndpointWithoutRequest<Results<Ok<MeResponse>, RedirectHttpResult>>
+internal class MeEndpoint(UserManager<User.Models.User> userManager) : EndpointWithoutRequest<Results<Ok<MeResponse>, RedirectHttpResult>>
 {
     public override void Configure()
     {
@@ -24,9 +24,12 @@ internal class MeEndpoint() : EndpointWithoutRequest<Results<Ok<MeResponse>, Red
         await Task.CompletedTask;
         try
         {
+            User.Models.User? user = await userManager.FindByEmailAsync(HttpContext.Email());
+
             return TypedResults.Ok(new MeResponse
             {
-                UserName = HttpContext.Email()
+                UserName = user.Email,
+                Image = user.Image
             });
         }
         catch (Exception)

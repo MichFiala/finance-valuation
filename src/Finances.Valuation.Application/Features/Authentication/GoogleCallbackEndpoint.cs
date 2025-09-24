@@ -21,6 +21,7 @@ internal class GoogleCallbackEndpoint(UserManager<User.Models.User> userManager,
         var result = await HttpContext.AuthenticateAsync(IdentityConstants.ApplicationScheme);
 
         var email = result.Principal?.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
+        var imageUrl = result.Principal?.FindFirst("urn:google:image")?.Value;
 
         var user = await userManager.FindByEmailAsync(email!);
         if (user == null)
@@ -29,9 +30,16 @@ internal class GoogleCallbackEndpoint(UserManager<User.Models.User> userManager,
             {
                 UserName = email,
                 Email = email,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                Image = imageUrl
             };
             await userManager.CreateAsync(user);
+        }
+        else if (imageUrl is not null && user.Image is null)
+        {
+            user.Image = imageUrl;
+
+            await userManager.UpdateAsync(user);
         }
 
         await signInManager.SignInAsync(user, isPersistent: false);

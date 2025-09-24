@@ -9,6 +9,7 @@ import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import SavingsIcon from "@mui/icons-material/Savings";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import {
+  Avatar,
   List,
   ListItem,
   ListItemButton,
@@ -27,7 +28,7 @@ import IncomesPage from "./features/incomes/IncomesPage";
 import SpendingsPage from "./features/spendings/SpendingsPage";
 import { fetchMe } from "./features/user/userApi";
 import { User } from "./features/user/userModel";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -130,9 +131,12 @@ function App() {
               spacing={2}
               justifyContent={"flex-start"}
             >
-              {/* <Avatar alt="Upload new avatar" /> */}
               <Tooltip title={user?.userName}>
-                  <AccountCircleIcon fontSize={"large"}/>
+                {user?.image ? (
+                  <Avatar alt="Upload new avatar" src={user.image} />
+                ) : (
+                  <AccountCircleIcon fontSize={"large"} />
+                )}
               </Tooltip>
               <Switch defaultChecked />
             </Stack>

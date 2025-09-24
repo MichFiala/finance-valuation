@@ -14,6 +14,7 @@ using Finances.Valuation.Application.Features.Spendings;
 using Finances.Valuation.Application.Features.Strategies;
 using Finances.Valuation.Application.Features.User.Models;
 using Finances.Valuation.Application.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -57,6 +58,9 @@ builder.Services.AddAuthentication(options =>
     googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
     googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
     googleOptions.SignInScheme = IdentityConstants.ApplicationScheme;
+
+    googleOptions.Scope.Add("profile");
+    googleOptions.ClaimActions.MapJsonKey("urn:google:image", "picture", "url");
 });
 builder.Services.AddAuthorization();
 
