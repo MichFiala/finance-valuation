@@ -76,8 +76,12 @@ builder.Services.AddTransient<SavingsLongevityCalculationService>();
 var app = builder.Build();
 
 app.UseStaticFiles();
-app.UseCors("CorsPolicy");
 
+// Použití CORS jen pokud je prostředí Development
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("CorsPolicy");
+}
 app.UseHttpsRedirection();
 app.UseAuthentication()
    .UseAuthorization();
@@ -92,5 +96,10 @@ app.MapIdentityApi<User>();
 
 app.MapFallbackToFile("index.html");
 
+using var scope = app.Services.CreateScope();
+var contextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
+using var context = contextFactory.CreateDbContext();
+
+await context.Database.MigrateAsync();
 
 app.Run();

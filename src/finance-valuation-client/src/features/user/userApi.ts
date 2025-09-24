@@ -1,7 +1,7 @@
 import { User } from "./userModel";
 
 export async function fetchMe() {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl =  process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/users/me`, {
     method: "GET",
     credentials: "include",

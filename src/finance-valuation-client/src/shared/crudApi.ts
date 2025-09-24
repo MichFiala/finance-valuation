@@ -1,5 +1,5 @@
 export async function fetchEntries(endpoint: string) {
-  const apiUrl = process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl = process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/${endpoint}`, {
     method: "GET",
     credentials: "include",
@@ -11,7 +11,7 @@ export async function fetchEntries(endpoint: string) {
 }
 
 export async function create(endpoint: string, body : {}) {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl =  process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/${endpoint}`, {
     method: 'POST',
     headers: {
@@ -27,7 +27,7 @@ export async function create(endpoint: string, body : {}) {
 }
 
 export async function update(endpoint:string, id: number, body: {}) {
-  const apiUrl = process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl = process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/${endpoint}/${id}`, {
     method: 'POST',
     headers: {
@@ -43,7 +43,7 @@ export async function update(endpoint:string, id: number, body: {}) {
 }
 
 export async function deleteEntry(endpoint:string, id: number) {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl =  process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/${endpoint}/${id}`, {
     method: 'DELETE',
     credentials: "include",

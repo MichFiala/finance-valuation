@@ -1,5 +1,5 @@
 export async function fetchSummary() {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl =  process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/summary`,{
     method: "GET",
     credentials: "include",
@@ -11,7 +11,7 @@ export async function fetchSummary() {
 }
 
 export async function fetchSavingsLongevity() {
-  const apiUrl =  process.env.REACT_APP_API_URL || 'https://localhost:7089';
+  const apiUrl =  process.env.REACT_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/savings-longevity`,{
     method: "GET",
     credentials: "include",
