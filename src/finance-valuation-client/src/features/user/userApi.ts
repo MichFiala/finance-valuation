@@ -2,13 +2,13 @@ import { User } from "./userModel";
 
 export async function fetchMe() {
   const apiUrl =  process.env.REACT_APP_API_URL || '';
+  const returnUrl = process.env.REACT_APP_RETURN_URL;
   const response = await fetch(`${apiUrl}/users/me`, {
     method: "GET",
     credentials: "include",
   });
   if(response.redirected){
-    window.location.href =
-      "https://localhost:7089/login/google?returnUrl=http://localhost:3000";
+    window.location.href = `${apiUrl}/login/google?returnUrl=${returnUrl}`;
 
     return null;
   }
