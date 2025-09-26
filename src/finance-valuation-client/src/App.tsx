@@ -13,8 +13,6 @@ import SunnyIcon from "@mui/icons-material/Sunny";
 import {
   Avatar,
   Box,
-  Button,
-  createTheme,
   IconButton,
   List,
   ListItem,
@@ -22,8 +20,6 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
-  Switch,
-  ThemeProvider,
   Tooltip,
   useColorScheme,
 } from "@mui/material";

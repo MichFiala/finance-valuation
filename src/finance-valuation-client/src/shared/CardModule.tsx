@@ -20,7 +20,6 @@ import {
 import { Stack, Select, MenuItem, Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import { text } from "stream/consumers";
 
 export const CardModule = ({
   entry,
