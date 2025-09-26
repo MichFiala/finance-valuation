@@ -18,8 +18,9 @@ import {
   SpendingsFrequency,
 } from "../features/spendings/spendingsModel";
 import { Stack, Select, MenuItem, Button } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import { text } from "stream/consumers";
 
 export const CardModule = ({
   entry,
@@ -38,7 +39,9 @@ export const CardModule = ({
     type: string,
     isMandatory: boolean
   ) => void;
-  handleDelete:(entry: SavingsDto | InvestmentDto | DebtDto | SpendingsDto) => void;
+  handleDelete: (
+    entry: SavingsDto | InvestmentDto | DebtDto | SpendingsDto
+  ) => void;
   color: string;
   textColor: string;
   icon: ReactNode;
@@ -47,7 +50,9 @@ export const CardModule = ({
   const [name, setName] = useState("");
   const [amount, setAmount] = useState(0);
   const [type, setType] = useState("");
-  const [isChecked, setIsChecked] = useState("isMandatory" in entry ? entry.isMandatory : false);
+  const [isChecked, setIsChecked] = useState(
+    "isMandatory" in entry ? entry.isMandatory : false
+  );
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -74,18 +79,25 @@ export const CardModule = ({
   };
   return (
     <Card
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        overflow: "hidden",
-      }}
+      sx={[
+        (theme) => ({
+          backgroundColor: theme.palette.secondary.main,
+          color: theme.palette.text.primary,
+          border: "1px solid",
+          borderRadius: "8px",
+          borderColor: color,
+        }),
+      ]}
     >
       <Stack
         direction={"row"}
         alignContent={"center"}
         alignItems={"center"}
         justifyContent={"center"}
-        style={{ backgroundColor: color, color: textColor }}
+        sx={{
+          color: textColor,
+          background: color
+        }}
       >
         {icon}
         {isEditing ? (
@@ -94,7 +106,6 @@ export const CardModule = ({
             onChange={(e) => setName(e.target.value)}
             variant="standard"
             sx={{
-              color: "text.secondary",
               mb: 1.5,
               p: 1,
               marginBottom: 0,
@@ -103,7 +114,6 @@ export const CardModule = ({
         ) : (
           <Typography
             sx={{
-              color: "text.secondary",
               mb: 1.5,
               p: 1,
               marginBottom: 0,
@@ -119,7 +129,10 @@ export const CardModule = ({
           alignItems={"center"}
           justifyContent={"center"}
         >
-          <Stack direction={"row"} alignContent={"center"}>
+          <Stack
+            direction={"row"}
+            alignContent={"center"}
+          >
             {"frequency" in entry &&
               (isEditing ? (
                 <Select
@@ -157,14 +170,13 @@ export const CardModule = ({
                 }
                 variant="standard"
                 sx={{
-                  color: "text.secondary",
                   mb: 1.5,
                   p: 1,
                   marginBottom: 0,
                 }}
               />
             ) : (
-              <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
+              <Typography sx={{ mb: 1.5 }}>
                 <b>
                   {entry.amount.toLocaleString("cs-CZ", {
                     style: "currency",
@@ -174,7 +186,7 @@ export const CardModule = ({
               </Typography>
             )}
             {"targetAmount" in entry && entry.targetAmount ? (
-              <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
+              <Typography sx={{ mb: 1.5 }}>
                 /{" "}
                 {entry.targetAmount.toLocaleString("cs-CZ", {
                   style: "currency",
@@ -221,9 +233,14 @@ export const CardModule = ({
       </CardContent>
       {enableEditing && (
         <CardActions
-          sx={{ mt: "auto", justifyContent: "center" }}
+          sx={[
+            (theme) => ({
+              mt: "auto",
+              justifyContent: "center",
+            }),
+          ]}
           style={{
-            backgroundColor: alpha(color, 0.3),
+            backgroundColor: alpha(color, 0.7),
             paddingTop: "auto",
           }}
         >
@@ -233,16 +250,40 @@ export const CardModule = ({
             justifyContent={"flex-start"}
           >
             <Button size="small" onClick={() => handleEditClick(entry)}>
-               {isEditing ? <CloseIcon/> : <SettingsIcon />}
+              {isEditing ? (
+                <CloseIcon
+                  sx={[
+                    (theme) => ({
+                      color: theme.palette.text.primary,
+                    }),
+                  ]}
+                />
+              ) : (
+                <SettingsIcon
+                  sx={[
+                    (theme) => ({
+                      color: theme.palette.text.primary,
+                    }),
+                  ]}
+                />
+              )}
             </Button>
             {isEditing ? (
               <>
-              <Button size="small" onClick={() => handleSaveClick(entry)} style={{color: "green"}}>
-                <SaveAltIcon />
-              </Button>
-              <Button size="small" onClick={() => handleDelete(entry)} style={{color: "red"}}>
-                <DeleteIcon />
-              </Button>
+                <Button
+                  size="small"
+                  onClick={() => handleSaveClick(entry)}
+                  style={{ color: "green" }}
+                >
+                  <SaveAltIcon />
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => handleDelete(entry)}
+                  style={{ color: "red" }}
+                >
+                  <DeleteIcon />
+                </Button>
               </>
             ) : (
               <></>
