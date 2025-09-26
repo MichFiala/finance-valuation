@@ -7,8 +7,8 @@ export interface DebtDto {
   name: string;
   debtType: DebtType;
   amount: number;
-  interest: number;
-  payment: number;
+  interest?: number;
+  payment?: number;
 }
 
 export interface DebtUpdateDto {
@@ -16,6 +16,6 @@ export interface DebtUpdateDto {
   name: string;
   debtType: DebtType;
   amount: string;
-  interest: string;
-  payment: string;
+  interest?: string;
+  payment?: string;
 }

@@ -29,8 +29,8 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
     const entry = {
       ...updateDto,
       amount: parseFloat(updateDto.amount.replace(",", ".")) || 0,
-      interest: parseFloat(updateDto.interest.replace(",", ".")) || 0,
-      payment: parseFloat(updateDto.payment.replace(",", ".")) || 0,
+      interest: parseFloat(updateDto.interest!.replace(",", ".")) || 0,
+      payment: parseFloat(updateDto.payment!.replace(",", ".")) || 0,
     };
 
     await createOrUpdate(DebtsEndpoint, entry);

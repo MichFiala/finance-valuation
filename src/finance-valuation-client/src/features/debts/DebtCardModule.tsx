@@ -23,8 +23,8 @@ export const DebtCardModule = ({
   const [entry, setEntry] = useState<DebtUpdateDto>({
     ...entryDto,
     amount: entryDto.amount.toString(),
-    interest: entryDto.interest.toString(),
-    payment: entryDto.payment.toString(),
+    interest: entryDto.interest?.toString(),
+    payment: entryDto.payment?.toString(),
   });
   const [isEditing, setIsEditing] = useState(false);
 
