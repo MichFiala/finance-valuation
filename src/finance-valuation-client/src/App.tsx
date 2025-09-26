@@ -60,12 +60,7 @@ function App() {
     <Box
       sx={{
         display: "flex",
-        width: "100%",
-        alignItems: "center",
-        justifyContent: "center",
         bgcolor: "background.default",
-        p: 3,
-        minHeight: "56px",
       }}
     >
       <Grid container className="App" height="100vh" width="100vw" spacing={1}>
