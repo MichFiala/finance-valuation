@@ -1,9 +1,10 @@
 import { Button, Divider, Grid, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
-import { CardModule } from "../../shared/CardModule";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { SpendingsDto, SpendingsFrequency } from "./spendingsModel";
-import { createSpending, fetchSpendings, updateSpending } from "./spendingsApi";
+import {
+  SpendingsEndpoint,
+} from "./spendingsApi";
 import {
   spendingMonthlyColor,
   spendingMonthlyTextColor,
@@ -12,7 +13,9 @@ import {
   spendingYearlyColor,
   spendingYearlyTextColor,
 } from "./spendingStylesSettings";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
+import { createOrUpdate, fetchEntries } from "../../shared/crudApi";
+import { SpendingsCardModule } from "./SpendingsCardModule";
 
 export const SpendingsModule = (
   { enableEditing }: { enableEditing: boolean } = { enableEditing: false }
@@ -24,7 +27,7 @@ export const SpendingsModule = (
   const [reloadCounter, setReloadCounter] = useState(0);
 
   useEffect(() => {
-    fetchSpendings()
+    fetchEntries(SpendingsEndpoint)
       .then((data) => {
         setSpendings(data.spendings);
       })
@@ -36,29 +39,8 @@ export const SpendingsModule = (
       });
   }, [reloadCounter]);
 
-  const handleCreateOrUpdate = async (
-    id: number | undefined,
-    name: string,
-    amount: number,
-    type: string,
-    isMandatory: boolean
-  ) => {
-    if (id !== undefined) {
-      await updateSpending(
-        id,
-        name,
-        amount,
-        type as SpendingsFrequency,
-        isMandatory
-      );
-    } else {
-      await createSpending(
-        name,
-        amount,
-        type as SpendingsFrequency,
-        isMandatory
-      );
-    }
+  const handleCreateOrUpdate = async (entry: any) => {
+    await createOrUpdate(SpendingsEndpoint, entry);
 
     setReloadCounter(reloadCounter + 1);
   };
@@ -86,10 +68,10 @@ export const SpendingsModule = (
 
   return (
     <>
-      <Typography variant="h6" component="h6">
+      <Typography variant="h6" component="h6" sx={[(theme) => ({color: theme.palette.text.primary})]}>
         Monthly
       </Typography>
-      <Divider />
+      <Divider sx={[(theme) => ({color: theme.palette.text.primary})]}/>
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Monthly")
@@ -98,8 +80,8 @@ export const SpendingsModule = (
           )
           .map((spending) => (
             <Grid key={`Spending-${spending.id}`} size={3}>
-              <CardModule
-                entry={spending}
+              <SpendingsCardModule
+                entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
                 handleDelete={handleDelete}
                 color={spendingMonthlyColor}
@@ -120,15 +102,15 @@ export const SpendingsModule = (
               handleCreateEmptySpending("Monthly" as SpendingsFrequency)
             }
           >
-            Add new
+            <AddIcon/>
           </Button>
         </Grid>
       </Grid>
 
-      <Typography variant="h6" component="h6">
+      <Typography variant="h6" component="h6" sx={[(theme) => ({color: theme.palette.text.primary})]}>
         Quaterly
       </Typography>
-      <Divider />
+      <Divider sx={[(theme) => ({color: theme.palette.text.primary})]}/>
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Quaterly")
@@ -137,8 +119,8 @@ export const SpendingsModule = (
           )
           .map((spending) => (
             <Grid key={`Spending-${spending.id}`} size={3}>
-              <CardModule
-                entry={spending}
+              <SpendingsCardModule
+                entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
                 handleDelete={handleDelete}
                 color={spendingQuarterlyColor}
@@ -159,14 +141,14 @@ export const SpendingsModule = (
               handleCreateEmptySpending("Quaterly" as SpendingsFrequency)
             }
           >
-            Add new
+            <AddIcon/>
           </Button>
         </Grid>
       </Grid>
-      <Typography variant="h6" component="h6">
+      <Typography variant="h6" component="h6" sx={[(theme) => ({color: theme.palette.text.primary})]}>
         Yearly
       </Typography>
-      <Divider />
+      <Divider sx={[(theme) => ({color: theme.palette.text.primary})]}/>
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Yearly")
@@ -175,8 +157,8 @@ export const SpendingsModule = (
           )
           .map((spending) => (
             <Grid key={`Spending-${spending.id}`} size={3}>
-              <CardModule
-                entry={spending}
+              <SpendingsCardModule
+                entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
                 handleDelete={handleDelete}
                 color={spendingYearlyColor}
@@ -198,7 +180,7 @@ export const SpendingsModule = (
                 handleCreateEmptySpending("Yearly" as SpendingsFrequency)
               }
             >
-              <AddIcon></AddIcon>
+              <AddIcon/>
             </Button>
           </Grid>
         )}

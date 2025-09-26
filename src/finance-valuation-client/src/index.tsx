@@ -23,8 +23,8 @@ const theme = createTheme({
         },
         text: {
           primary: "#fff",
-          secondary: "#000",
-        },
+          secondary: "#fff",
+        },      
       },
     },
     light: {
@@ -37,7 +37,7 @@ const theme = createTheme({
         },
         text: {
           primary: "#000",
-          secondary: "#fff",
+          secondary: "#000",
         },
       },
     },

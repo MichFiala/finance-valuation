@@ -24,6 +24,7 @@ internal class UpdateSavingEndpoint(UpdateHandler updateHandler, SavingRepositor
         {
             saving.Name = request.Name;
             saving.Amount = request.Amount;
+            saving.TargetAmount = request.TargetAmount;
         }, savingRepository, HttpContext);
     }    
 }

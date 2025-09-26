@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
-import { createDebt, deleteDebt, fetchDebts, updateDebt } from "./debtApi";
+import { DebtsEndpoint } from "./debtApi";
 import { Button, Grid } from "@mui/material";
 import { debtColor, debtTextColor } from "./debtStylesSettings";
-import { CardModule } from "../../shared/CardModule";
 import HomeWorkIcon from "@mui/icons-material/HomeWork";
-import { DebtDto } from "./debtModel";
-import AddIcon from '@mui/icons-material/Add';
+import { DebtDto, DebtUpdateDto } from "./debtModel";
+import AddIcon from "@mui/icons-material/Add";
+import {
+  createOrUpdate,
+  deleteEntry,
+  fetchEntries,
+} from "../../shared/crudApi";
+import { DebtCardModule } from "./DebtCardModule";
 
 export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
   const [debts, setDebts] = useState<DebtDto[]>([]);
@@ -14,22 +19,21 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
   const [reloadCounter, setReloadCounter] = useState(0);
 
   useEffect(() => {
-    fetchDebts()
+    fetchEntries(DebtsEndpoint)
       .then((data) => setDebts(data.debts))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [reloadCounter]);
 
-  const handleCreateOrUpdate = async (
-    id: number | undefined,
-    name: string,
-    amount: number
-  ) => {
-    if (id !== undefined) {
-      await updateDebt(id, name, amount);
-    } else {
-      await createDebt(name, amount);
-    }
+  const handleCreateOrUpdate = async (updateDto: DebtUpdateDto) => {
+    const entry = {
+      ...updateDto,
+      amount: parseFloat(updateDto.amount.replace(",", ".")) || 0,
+      interest: parseFloat(updateDto.interest.replace(",", ".")) || 0,
+      payment: parseFloat(updateDto.payment.replace(",", ".")) || 0,
+    };
+
+    await createOrUpdate(DebtsEndpoint, entry);
 
     setReloadCounter(reloadCounter + 1);
   };
@@ -40,7 +44,7 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
       setDebts([...debts.filter((e) => e.id !== entry)]);
       return;
     }
-    await deleteDebt(debt.id);
+    await deleteEntry(DebtsEndpoint, debt.id);
     setReloadCounter(reloadCounter + 1);
   };
 
@@ -58,19 +62,21 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
 
   return (
     <>
-      {debts.sort((a, b) => b.amount - a.amount).map((debt) => (
-        <Grid key={`Debt-${debt.id}`} size={3}>
-          <CardModule
-            entry={debt}
-            handleCreateOrUpdate={handleCreateOrUpdate}
-            handleDelete={handleDelete}
-            color={debtColor}
-            textColor={debtTextColor}
-            icon={debt.debtType === "Mortgage" && <HomeWorkIcon />}
-            enableEditing={enableEditing}
-          />
-        </Grid>
-      ))}
+      {debts
+        .sort((a, b) => b.amount - a.amount)
+        .map((debt) => (
+          <Grid key={`Debt-${debt.id}`} size={3}>
+            <DebtCardModule
+              entryDto={debt}
+              handleCreateOrUpdate={handleCreateOrUpdate}
+              handleDelete={handleDelete}
+              color={debtColor}
+              textColor={debtTextColor}
+              icon={debt.debtType === "Mortgage" && <HomeWorkIcon />}
+              enableEditing={enableEditing}
+            />
+          </Grid>
+        ))}
       {enableEditing && (
         <Grid size={3} textAlign={"left"} alignContent={"start"}>
           <Button

@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
 import { InvestmentDto } from "./investmentModel";
 import {
-  createInvestment,
-  deleteInvestment,
-  fetchInvestments,
-  updateInvestment,
+  InvestmentsEndpoint,
 } from "./investmentsApi";
 import { Button, Grid } from "@mui/material";
 import {
   investmentColor,
   investmentTextColor,
 } from "./investmentStylesSettings";
-import { CardModule } from "../../shared/CardModule";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
+import { createOrUpdate, deleteEntry, fetchEntries } from "../../shared/crudApi";
+import { InvestmentCardModule } from "./InvestmentCardModule";
 
 export const InvestmentsModule = (
   { enableEditing }: { enableEditing: boolean } = { enableEditing: false }
@@ -25,7 +23,7 @@ export const InvestmentsModule = (
   const [reloadCounter, setReloadCounter] = useState(0);
 
   useEffect(() => {
-    fetchInvestments()
+    fetchEntries(InvestmentsEndpoint)
       .then((data) => {
         setInvestments(data.investments);
       })
@@ -37,16 +35,8 @@ export const InvestmentsModule = (
       });
   }, [reloadCounter]);
 
-  const handleCreateOrUpdate = async (
-    id: number | undefined,
-    name: string,
-    amount: number
-  ) => {
-    if (id !== undefined) {
-      await updateInvestment(id, name, amount);
-    } else {
-      await createInvestment(name, amount);
-    }
+  const handleCreateOrUpdate = async (entry: any) => {
+    await createOrUpdate(InvestmentsEndpoint, entry);
 
     setReloadCounter(reloadCounter + 1);
   };
@@ -57,7 +47,7 @@ export const InvestmentsModule = (
       setInvestments([...investments.filter((e) => e.id !== entry)]);
       return;
     }
-    await deleteInvestment(investment.id);
+    await deleteEntry(InvestmentsEndpoint, investment.id);
     setReloadCounter(reloadCounter + 1);
   };
 
@@ -74,19 +64,21 @@ export const InvestmentsModule = (
 
   return (
     <>
-      {investments.sort((a, b) => b.amount - a.amount).map((investment) => (
-        <Grid key={`Investment-${investment.id}`} size={3}>
-          <CardModule
-            entry={investment}
-            handleCreateOrUpdate={handleCreateOrUpdate}
-            handleDelete={handleDelete}
-            color={investmentColor}
-            textColor={investmentTextColor}
-            icon={<TrendingUpIcon />}
-            enableEditing={enableEditing}
-          />
-        </Grid>
-      ))}
+      {investments
+        .sort((a, b) => b.amount - a.amount)
+        .map((investment) => (
+          <Grid key={`Investment-${investment.id}`} size={3}>
+            <InvestmentCardModule
+              entryDto={investment}
+              handleCreateOrUpdate={handleCreateOrUpdate}
+              handleDelete={handleDelete}
+              color={investmentColor}
+              textColor={investmentTextColor}
+              icon={<TrendingUpIcon />}
+              enableEditing={enableEditing}
+            />
+          </Grid>
+        ))}
       {enableEditing && (
         <Grid size={3} textAlign={"left"} alignContent={"start"}>
           <Button

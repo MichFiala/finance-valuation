@@ -23,6 +23,8 @@ internal class UpdateDebtEndpoint(UpdateHandler updateHandler, DebtRepository de
         {
             debt.Name = request.Name;
             debt.Amount = request.Amount;
+            debt.Payment = request.Payment;
+            debt.Interest = request.Interest;
         }, debtRepository, HttpContext);
     }
 }
