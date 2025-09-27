@@ -69,6 +69,8 @@ function App() {
       sx={{
         display: "flex",
         bgcolor: "background.default",
+        width: "100vw",
+        height: "100vh"
       }}
     >
       <Stack width={"100%"} padding={5} spacing={1}>
