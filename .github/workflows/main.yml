@@ -35,7 +35,7 @@ jobs:
       - name: Copy React build to wwwroot
         run: |
           rm -rf ./src/Finances.Valuation.Application/wwwroot/*
-          cp -r ./src/finance-valuation-client/build/* ./src/Finances.Valuation.Application/wwwroot/
+          cp -r ./src/finance-valuation-client/dist/* ./src/Finances.Valuation.Application/wwwroot/
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
