@@ -12,7 +12,13 @@ import {
 } from "../../shared/crudApi";
 import { DebtCardModule } from "./DebtCardModule";
 
-export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
+export const DebtsModule = ({
+  enableEditing,
+  handleOpenSnackBar,
+}: {
+  enableEditing: boolean;
+  handleOpenSnackBar?: (message: string) => void;
+}) => {
   const [debts, setDebts] = useState<DebtDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +41,12 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
 
     await createOrUpdate(DebtsEndpoint, entry);
 
+    if (handleOpenSnackBar) {
+      if (updateDto.id > 0)
+        handleOpenSnackBar(`Debt ${updateDto.name} Updated`);
+      else handleOpenSnackBar(`Debt ${updateDto.name} Created`);
+    }
+
     setReloadCounter(reloadCounter + 1);
   };
 
@@ -45,6 +57,9 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
       return;
     }
     await deleteEntry(DebtsEndpoint, debt.id);
+    if (handleOpenSnackBar) {
+      handleOpenSnackBar(`Debt ${entry.name} Deleted`);
+    }
     setReloadCounter(reloadCounter + 1);
   };
 
@@ -65,7 +80,10 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
       {debts
         .sort((a, b) => b.amount - a.amount)
         .map((debt) => (
-          <Grid key={`Debt-${debt.id}`} size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}>
+          <Grid
+            key={`Debt-${debt.id}`}
+            size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}
+          >
             <DebtCardModule
               entryDto={debt}
               handleCreateOrUpdate={handleCreateOrUpdate}
@@ -78,7 +96,11 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
           </Grid>
         ))}
       {enableEditing && (
-        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}>
+        <Grid
+          textAlign={"left"}
+          alignContent={"start"}
+          size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}
+        >
           <Button
             size="large"
             style={{

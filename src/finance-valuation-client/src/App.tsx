@@ -74,8 +74,11 @@ function App() {
       }}
     >
       <Stack width={"100%"} padding={5} spacing={1}>
-        <Stack spacing={2}>
-          {user && (
+        <Grid container>
+          <Grid size={1}>
+            <Avatar alt="Logo" src="/logo.png" />
+          </Grid>
+          <Grid size={11}>
             <Stack
               direction={"row-reverse"}
               width={"100%"}
@@ -83,13 +86,15 @@ function App() {
               textAlign={"center"}
               alignContent={"center"}
             >
-              <Tooltip title={user?.userName}>
-                {user?.image ? (
-                  <Avatar alt="Users avatar" src={user.image} />
-                ) : (
-                  <AccountCircleIcon fontSize={"large"} />
-                )}
-              </Tooltip>
+              {user && (
+                <Tooltip title={user?.userName}>
+                  {user?.image ? (
+                    <Avatar alt="Users avatar" src={user.image} />
+                  ) : (
+                    <AccountCircleIcon fontSize={"large"} />
+                  )}
+                </Tooltip>
+              )}
               <IconButton
                 onClick={() =>
                   mode === "dark" ? setMode("light") : setMode("dark")
@@ -110,8 +115,8 @@ function App() {
                 ))}
               </Select>
             </Stack>
-          )}
-        </Stack>
+          </Grid>
+        </Grid>
         <Grid container className="App">
           <Grid
             container
