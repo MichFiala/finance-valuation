@@ -1,4 +1,5 @@
-import { SavingsLongevityGrade } from "./summaryApi";
+import { SavingsLongevityGrade } from "./savingsLongevityApi";
+
 
 export const SavingsLongevityColors: Record<SavingsLongevityGrade, string> = {
   [SavingsLongevityGrade.Critical]: "#C62828",

@@ -19,8 +19,11 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  MenuItem,
+  Select,
   Stack,
   Tooltip,
+  Typography,
   useColorScheme,
 } from "@mui/material";
 import DashboardPage from "./features/dashboard/DashboardPage";
@@ -33,12 +36,17 @@ import SpendingsPage from "./features/spendings/SpendingsPage";
 import { fetchMe } from "./features/user/userApi";
 import { User } from "./features/user/userModel";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useTranslation } from "react-i18next";
+import i18n, { supportedLngs } from "./i18n/config";
+import { Padding } from "@mui/icons-material";
+
 function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedPage, setSelectedPage] = useState("dashboard");
   const [user, setUser] = useState<User | null>(null);
   const { mode, setMode } = useColorScheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchMe()
@@ -63,123 +71,133 @@ function App() {
         bgcolor: "background.default",
       }}
     >
-      <Grid container className="App" height="100vh" width="100vw" spacing={1}>
-        <Grid
-          container
-          size={2}
-          justifyContent="stretch"
-          style={{ padding: "20px" }}
-        >
-          <List
+      <Stack width={"100%"} padding={5} spacing={1}>
+        <Stack spacing={2}>
+          {user && (
+            <Stack
+              direction={"row-reverse"}
+              width={"100%"}
+              spacing={1}
+              textAlign={"center"}
+              alignContent={"center"}
+            >
+              <Tooltip title={user?.userName}>
+                {user?.image ? (
+                  <Avatar alt="Users avatar" src={user.image} />
+                ) : (
+                  <AccountCircleIcon fontSize={"large"} />
+                )}
+              </Tooltip>
+              <IconButton
+                onClick={() =>
+                  mode === "dark" ? setMode("light") : setMode("dark")
+                }
+                sx={[(theme) => ({ color: theme.palette.text.primary })]}
+              >
+                {mode === "dark" ? <SunnyIcon /> : <BedtimeIcon />}
+              </IconButton>
+              <Select
+                value={i18n.resolvedLanguage}
+                label="Age"
+                onChange={(e) => i18n.changeLanguage(e.target.value)}
+              >
+                {Object.entries(supportedLngs).map(([code, name]) => (
+                  <MenuItem value={code} key={code}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Stack>
+          )}
+        </Stack>
+        <Grid container className="App">
+          <Grid container size={1.5} justifyContent="stretch">
+            <List
+              sx={[
+                (theme) => ({
+                  color: theme.palette.text.primary,
+                }),
+              ]}
+            >
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => setSelectedPage("dashboard")}>
+                  <ListItemIcon>
+                    <HomeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("dashboard")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => setSelectedPage("debts")}>
+                  <ListItemIcon>
+                    <AccountBalanceIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("debts")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => setSelectedPage("savings")}>
+                  <ListItemIcon>
+                    <SavingsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("savings")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => setSelectedPage("incomes")}>
+                  <ListItemIcon>
+                    <AccountBalanceWalletIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("incomes")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => setSelectedPage("investments")}>
+                  <ListItemIcon>
+                    <TrendingUpIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("investments")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => setSelectedPage("spendings")}>
+                  <ListItemIcon>
+                    <TrendingDownIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("spendings")} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => setSelectedPage("strategies")}>
+                  <ListItemIcon>
+                    <AccountTreeIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("strategies")} />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Grid>
+          <Grid
+            container
+            size={'grow'}
             sx={[
               (theme) => ({
-                color: theme.palette.text.primary,
+                color: theme.palette.text.secondary,
               }),
             ]}
           >
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setSelectedPage("dashboard")}>
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setSelectedPage("debts")}>
-                <ListItemIcon>
-                  <AccountBalanceIcon />
-                </ListItemIcon>
-                <ListItemText primary="Debts" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setSelectedPage("savings")}>
-                <ListItemIcon>
-                  <SavingsIcon />
-                </ListItemIcon>
-                <ListItemText primary="Savings" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setSelectedPage("incomes")}>
-                <ListItemIcon>
-                  <AccountBalanceWalletIcon />
-                </ListItemIcon>
-                <ListItemText primary="Incomes" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setSelectedPage("investments")}>
-                <ListItemIcon>
-                  <TrendingUpIcon />
-                </ListItemIcon>
-                <ListItemText primary="Investments" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setSelectedPage("spendings")}>
-                <ListItemIcon>
-                  <TrendingDownIcon />
-                </ListItemIcon>
-                <ListItemText primary="Spendings" />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => setSelectedPage("strategies")}>
-                <ListItemIcon>
-                  <AccountTreeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Strategies" />
-              </ListItemButton>
-            </ListItem>
-          </List>
+            <Stack width={"100%"} spacing={2}>
+              {selectedPage === "dashboard" && <DashboardPage />}
+              {selectedPage === "debts" && <DebtsPage />}
+              {selectedPage === "savings" && <SavingsPage />}
+              {selectedPage === "incomes" && <IncomesPage />}
+              {selectedPage === "investments" && <InvestmentsPage />}
+              {selectedPage === "spendings" && <SpendingsPage />}
+              {selectedPage === "strategies" && <StrategiesPage />}
+            </Stack>
+          </Grid>
         </Grid>
-        <Grid
-          container
-          size={10}
-          style={{ padding: "20px" }}
-          sx={[
-            (theme) => ({
-              color: theme.palette.text.secondary,
-            }),
-          ]}
-        >
-          <Stack width={"100%"} spacing={2}>
-            {user && (
-              <Stack
-                direction={"row-reverse"}
-                width={"100%"}
-                spacing={2}
-                justifyContent={"flex-start"}
-              >
-                <Tooltip title={user?.userName}>
-                  {user?.image ? (
-                    <Avatar alt="Users avatar" src={user.image} />
-                  ) : (
-                    <AccountCircleIcon fontSize={"large"} />
-                  )}
-                </Tooltip>
-                <IconButton
-                  onClick={() =>
-                    mode === "dark" ? setMode("light") : setMode("dark")
-                  }
-                  sx={[(theme) => ({ color: theme.palette.text.primary })]}
-                >
-                  {mode === "dark" ? <SunnyIcon /> : <BedtimeIcon />}
-                </IconButton>
-              </Stack>
-            )}
-            {selectedPage === "dashboard" && <DashboardPage />}
-            {selectedPage === "debts" && <DebtsPage />}
-            {selectedPage === "savings" && <SavingsPage />}
-            {selectedPage === "incomes" && <IncomesPage />}
-            {selectedPage === "investments" && <InvestmentsPage />}
-            {selectedPage === "spendings" && <SpendingsPage />}
-            {selectedPage === "strategies" && <StrategiesPage />}
-          </Stack>
-        </Grid>
-      </Grid>
+      </Stack>
     </Box>
   );
 }

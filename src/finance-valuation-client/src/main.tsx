@@ -4,6 +4,9 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material";
+import "./i18n/config.ts";
+
+const locale = navigator.language;
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,7 +16,7 @@ const theme = createTheme({
     dark: {
       palette: {
         background: {
-          default: "#0E1113"
+          default: "#0E1113",
         },
         primary: {
           main: "#0E1113",
@@ -24,7 +27,7 @@ const theme = createTheme({
         text: {
           primary: "#fff",
           secondary: "#fff",
-        },      
+        },
       },
     },
     light: {
@@ -44,12 +47,13 @@ const theme = createTheme({
   },
 });
 
-
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme} defaultMode="dark">
-      <App />
-    </ThemeProvider>
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <ThemeProvider theme={theme} defaultMode="dark">
+        <App />
+      </ThemeProvider>
+    </React.Suspense>
   </React.StrictMode>
 );
 

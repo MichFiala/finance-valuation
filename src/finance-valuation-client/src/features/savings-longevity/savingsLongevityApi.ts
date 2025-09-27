@@ -1,17 +1,5 @@
-export async function fetchSummary() {
-  const apiUrl =  process.env.REACT_APP_API_URL || '';
-  const response = await fetch(`${apiUrl}/summary`,{
-    method: "GET",
-    credentials: "include",
-  });
-  if (!response.ok) {
-    throw new Error('Failed to fetch summary');
-  }
-  return response.json() as Promise<SummaryResponseDto>;
-}
-
 export async function fetchSavingsLongevity() {
-  const apiUrl =  process.env.REACT_APP_API_URL || '';
+  const apiUrl =  import.meta.env.VITE_APP_API_URL || '';
   const response = await fetch(`${apiUrl}/savings-longevity`,{
     method: "GET",
     credentials: "include",
