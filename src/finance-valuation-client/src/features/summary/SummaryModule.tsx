@@ -62,7 +62,7 @@ export function SummaryModule() {
 
   return (
     <Grid container spacing={2}>
-      <Grid size={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}>
         <Card sx={{ height: "100%" }} style={investmentsCardStyle}>
           <CardContent style={{ marginTop: "auto" }}>
             <Typography component="div" variant="h5" gutterBottom>
@@ -78,7 +78,7 @@ export function SummaryModule() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid size={4}>
+      <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}>
         <Card sx={{ height: "100%" }} style={savingsCardStyle}>
           <CardContent style={{ marginTop: "auto" }}>
             <Typography component="div" variant="h5">
@@ -94,7 +94,7 @@ export function SummaryModule() {
           </CardContent>
         </Card>
       </Grid>
-      <Grid size={4}>
+      <Grid size={{ xs: 12, sm: 12, md: 4, lg: 4, xl: 4 }}>
         <Stack spacing={2}>
           <Card style={debtsCardStyle}>
             <CardContent style={{ marginTop: "auto" }}>

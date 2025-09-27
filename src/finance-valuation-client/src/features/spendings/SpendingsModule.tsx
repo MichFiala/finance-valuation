@@ -79,7 +79,7 @@ export const SpendingsModule = (
             a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
           )
           .map((spending) => (
-            <Grid key={`Spending-${spending.id}`} size={3}>
+            <Grid key={`Spending-${spending.id}`} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
               <SpendingsCardModule
                 entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
@@ -91,7 +91,7 @@ export const SpendingsModule = (
               />
             </Grid>
           ))}
-        <Grid size={3} textAlign={"left"} alignContent={"start"}>
+        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
           <Button
             size="large"
             style={{
@@ -118,7 +118,7 @@ export const SpendingsModule = (
             a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
           )
           .map((spending) => (
-            <Grid key={`Spending-${spending.id}`} size={3}>
+            <Grid key={`Spending-${spending.id}`} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
               <SpendingsCardModule
                 entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
@@ -130,7 +130,7 @@ export const SpendingsModule = (
               />
             </Grid>
           ))}
-        <Grid size={3} textAlign={"left"} alignContent={"start"}>
+        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
           <Button
             size="large"
             style={{
@@ -156,7 +156,7 @@ export const SpendingsModule = (
             a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
           )
           .map((spending) => (
-            <Grid key={`Spending-${spending.id}`} size={3}>
+            <Grid key={`Spending-${spending.id}`} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
               <SpendingsCardModule
                 entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
@@ -169,7 +169,7 @@ export const SpendingsModule = (
             </Grid>
           ))}
         {enableEditing && (
-          <Grid size={3} textAlign={"left"} alignContent={"start"}>
+          <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
             <Button
               size="large"
               style={{

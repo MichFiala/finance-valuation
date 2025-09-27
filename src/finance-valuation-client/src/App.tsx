@@ -69,8 +69,8 @@ function App() {
       sx={{
         display: "flex",
         bgcolor: "background.default",
-        width: "100vw",
-        height: "100vh"
+        minWidth: "100vw",
+        minHeight: "100vh",
       }}
     >
       <Stack width={"100%"} padding={5} spacing={1}>
@@ -113,7 +113,11 @@ function App() {
           )}
         </Stack>
         <Grid container className="App">
-          <Grid container size={1.5} justifyContent="stretch">
+          <Grid
+            container
+            size={{ xs: 12, sm: 12, md: 3, lg: 2, xl: 1.5 }}
+            justifyContent="stretch"
+          >
             <List
               sx={[
                 (theme) => ({
@@ -181,7 +185,7 @@ function App() {
           </Grid>
           <Grid
             container
-            size={'grow'}
+            size={{ xs: 12, sm: 12, md: 9, lg: 10, xl: 10.5 }}
             sx={[
               (theme) => ({
                 color: theme.palette.text.secondary,

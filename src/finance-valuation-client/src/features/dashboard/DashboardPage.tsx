@@ -25,7 +25,7 @@ export default function DashboardPage() {
       <Grid size={12}>
         <Divider />
       </Grid>
-      <Grid size={4}>
+      <Grid size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
         <SavingsLongevityModule />
       </Grid>
     </Grid>

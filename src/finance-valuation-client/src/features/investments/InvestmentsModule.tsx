@@ -67,7 +67,7 @@ export const InvestmentsModule = (
       {investments
         .sort((a, b) => b.amount - a.amount)
         .map((investment) => (
-          <Grid key={`Investment-${investment.id}`} size={3}>
+          <Grid key={`Investment-${investment.id}`} size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}>
             <InvestmentCardModule
               entryDto={investment}
               handleCreateOrUpdate={handleCreateOrUpdate}
@@ -80,7 +80,7 @@ export const InvestmentsModule = (
           </Grid>
         ))}
       {enableEditing && (
-        <Grid size={3} textAlign={"left"} alignContent={"start"}>
+        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}>
           <Button
             size="large"
             style={{

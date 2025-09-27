@@ -65,7 +65,7 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
       {debts
         .sort((a, b) => b.amount - a.amount)
         .map((debt) => (
-          <Grid key={`Debt-${debt.id}`} size={3}>
+          <Grid key={`Debt-${debt.id}`} size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}>
             <DebtCardModule
               entryDto={debt}
               handleCreateOrUpdate={handleCreateOrUpdate}
@@ -78,7 +78,7 @@ export const DebtsModule = ({ enableEditing }: { enableEditing: boolean }) => {
           </Grid>
         ))}
       {enableEditing && (
-        <Grid size={3} textAlign={"left"} alignContent={"start"}>
+        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}>
           <Button
             size="large"
             style={{
