@@ -44,7 +44,6 @@ export function LoginPage() {
                 }),
               ]}
             >
-              Login with:
             </Typography>
             <GoogleSignInButton onClick={redirectGoogleLogin} disabled={false} />
           </Stack>
