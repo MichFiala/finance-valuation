@@ -82,7 +82,7 @@ export const DebtsModule = ({
         .map((debt) => (
           <Grid
             key={`Debt-${debt.id}`}
-            size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}
+            size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
           >
             <DebtCardModule
               entryDto={debt}
@@ -99,7 +99,7 @@ export const DebtsModule = ({
         <Grid
           textAlign={"left"}
           alignContent={"start"}
-          size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}
+          size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
         >
           <Button
             size="large"

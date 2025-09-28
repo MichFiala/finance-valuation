@@ -5,6 +5,8 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material";
 import "./i18n/config.ts";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { LoginPage } from "./features/user/LoginPage";
 
 const locale = navigator.language;
 
@@ -49,11 +51,17 @@ const theme = createTheme({
 
 root.render(
   <React.StrictMode>
-    <React.Suspense fallback={<div>Loading...</div>}>
-      <ThemeProvider theme={theme} defaultMode="dark">
-        <App />
-      </ThemeProvider>
-    </React.Suspense>
+    {/* <React.Suspense fallback={<div>Loading...</div>}> */}
+    <ThemeProvider theme={theme} defaultMode="dark">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/" element={<App />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+    {/* </React.Suspense> */}
   </React.StrictMode>
 );
 

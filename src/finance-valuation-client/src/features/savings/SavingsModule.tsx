@@ -64,7 +64,7 @@ export const SavingsModule = (
       {savings
         .sort((a, b) => b.amount - a.amount)
         .map((saving) => (
-          <Grid key={`Saving-${saving.id}`} size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}>
+          <Grid key={`Saving-${saving.id}`} size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}>
             <SavingsCardModule
               entryDto={saving}
               handleCreateOrUpdate={handleCreateOrUpdate}
@@ -77,7 +77,7 @@ export const SavingsModule = (
           </Grid>
         ))}
       {enableEditing && (
-        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 3, lg: 3, xl: 3 }}>
+        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}>
           <Button
             size="large"
             style={{
