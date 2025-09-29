@@ -26,7 +26,7 @@ import { debtColor } from "../debts/debtStylesSettings";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { DebtDto } from "../debts/debtModel";
-import { create, deleteEntry, fetchEntries } from "../../shared/crudApi";
+import { create, createOrUpdate, deleteEntry, fetchEntries } from "../../shared/crudApi";
 import { DebtsEndpoint } from "../debts/debtApi";
 import { SavingsEndpoint } from "../savings/savingsApi";
 import { SavingsDto } from "../savings/savingsModel";
@@ -229,7 +229,7 @@ export default function CreateOrUpdateStrategyComponent({
   };
 
   const handleSaveClick = () => {
-    create(StrategiesEndpoint, { ...strategy });
+    createOrUpdate(StrategiesEndpoint, { ...strategy });
 
     handleDialogClose(true);
   };
