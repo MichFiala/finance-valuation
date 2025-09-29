@@ -14,7 +14,7 @@ import {
   spendingYearlyTextColor,
 } from "./spendingStylesSettings";
 import AddIcon from "@mui/icons-material/Add";
-import { createOrUpdate, fetchEntries } from "../../shared/crudApi";
+import { createOrUpdate, deleteEntry, fetchEntries } from "../../shared/crudApi";
 import { SpendingsCardModule } from "./SpendingsCardModule";
 
 export const SpendingsModule = (
@@ -55,10 +55,12 @@ export const SpendingsModule = (
   };
 
   const handleDelete = async (entry: any) => {
-    if ((entry as SpendingsDto).id === null) {
-      setSpendings([...spendings.filter((s) => s.id !== entry)]);
+    const spending = entry as SpendingsDto;
+    if (spending.id === null) {
+      setSpendings([...spendings.filter((e) => e.id !== entry)]);
       return;
     }
+    await deleteEntry(SpendingsEndpoint, spending.id);
 
     setReloadCounter(reloadCounter + 1);
   };
