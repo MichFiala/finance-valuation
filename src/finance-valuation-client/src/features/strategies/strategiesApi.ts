@@ -1,10 +1,12 @@
 import { CalculatedStrategyResponseDto } from "./strategyCalculatedModel";
 import { StrategyDto } from "./strategyModel";
 
-export async function fetchStrategy() {
+export const StrategiesEndpoint = "strategies";
+
+export async function fetchStrategy(id: number) {
   console.log('API URL:', import.meta.env.VITE_APP_API_URL);
   const apiUrl =  import.meta.env.VITE_APP_API_URL || '';
-  const response = await fetch(`${apiUrl}/strategies/1`,
+  const response = await fetch(`${apiUrl}/${StrategiesEndpoint}/${id}`,
     {
     method: "GET",
     credentials: "include",
@@ -17,7 +19,7 @@ export async function fetchStrategy() {
 
 export async function fetchCalculatedStrategy(incomeId: number) {
   const apiUrl =  import.meta.env.VITE_APP_API_URL || '';
-  const response = await fetch(`${apiUrl}/strategies/1/calculate?incomeId=${incomeId}`,{
+  const response = await fetch(`${apiUrl}/${StrategiesEndpoint}/1/calculate?incomeId=${incomeId}`,{
     method: "GET",
     credentials: "include",
   });

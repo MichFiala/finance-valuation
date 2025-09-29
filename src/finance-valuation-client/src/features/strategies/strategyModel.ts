@@ -6,12 +6,13 @@ export enum StrategyConfigurationType {
 }
 
 export interface StrategyDto {
+  id: number,
   name: string;
   strategyConfigurations: StrategyConfigurationDto[];
 }
 
 export interface StrategyConfigurationDto {
-  id: string;
+  id: number;
   name: string;
   type: StrategyConfigurationType;
   referenceId: number;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Finances.Valuation.Application.Features.Strategies;
 
-internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFactory, CrudDomainRepository crudDomainRepository)
+internal class StrategyRepository(IDbContextFactory<AppDbContext> dbContextFactory, CrudDomainRepository crudDomainRepository) : ICrudDomainRepository<Strategy>
 {
     public async Task<IReadOnlyCollection<Strategy>> GetAsync(string userId) => await crudDomainRepository.GetAsync<Strategy>(userId);
 

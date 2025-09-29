@@ -39,6 +39,7 @@ internal class GetStrategyConfigurationsEndpoint(UserManager<User.Models.User> u
 
         await Send.OkAsync(new GetStrategyConfigurationsResponse
         {
+            Id = strategy.Id,
             Name = strategy.Name,
             StrategyConfigurations = strategyConfigurationsDtos
         }, ct);

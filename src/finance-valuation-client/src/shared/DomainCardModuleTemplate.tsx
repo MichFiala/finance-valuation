@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardActions,
-  alpha,
-} from "@mui/material";
+import { Card, CardContent, CardActions, alpha } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import { Stack, Button } from "@mui/material";
@@ -75,16 +70,17 @@ export const DomainCardModuleTemplate = ({
             justifyContent={"flex-start"}
           >
             <Button size="small" onClick={() => handleEditClick()}>
-              {isEditing ? (
-                <CloseIcon
+              {!isEditing && (
+                <SettingsIcon
                   sx={[
                     (theme) => ({
                       color: theme.palette.text.primary,
                     }),
                   ]}
                 />
-              ) : (
-                <SettingsIcon
+              )}
+              {isEditing && (
+                <CloseIcon
                   sx={[
                     (theme) => ({
                       color: theme.palette.text.primary,

@@ -39,7 +39,7 @@ public class StrategyConfigurationDto
             Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Debt.Name,
             Type = StrategyConfigurationType.Debt,
-            MonthlyContributionAmount = strategyConfiguration.Debt.Payment,
+            MonthlyContributionAmount = strategyConfiguration.MonthlyContributionAmount ?? strategyConfiguration.Debt.Payment,
             ReferenceId = strategyConfiguration.DebtId ?? 0
         };
     }

@@ -1,50 +1,167 @@
 import { useEffect, useState } from "react";
 import {
+  alpha,
   Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Grid,
   Typography,
 } from "@mui/material";
-import {
-  StrategyDto,
-} from "./strategyModel";
-import { fetchStrategy } from "./strategiesApi";
+import { StrategyDto } from "./strategyModel";
+import { StrategiesEndpoint } from "./strategiesApi";
+import { fetchEntries } from "../../shared/crudApi";
+import AddIcon from "@mui/icons-material/Add";
+import { Stack } from "@mui/material";
+import CreateStrategyComponent from "./CreateOrUpdateStrategyComponent";
+import CreateOrUpdateStrategyComponent from "./CreateOrUpdateStrategyComponent";
+import { DomainCardModuleTemplate } from "../../shared/DomainCardModuleTemplate";
 import SettingsIcon from "@mui/icons-material/Settings";
-import CalculatedStrategyComponent from "./CalculatedStrategyComponent";
-import StrategySettingsComponent from "./StrategySettingsComponent";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 
+const StrategyColor = "#2397a7ff";
 
 export default function StrategiesPage() {
-  const [strategyResponse, setStrategyResponse] = useState<StrategyDto | null>(
-    null
-  );
+  const [strategies, setStrategies] = useState<StrategyDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedStrategy, setSelectedStrategy] = useState<StrategyDto | null>(
+    null
+  );
+  const [open, setOpen] = useState<boolean>(false);
+  const [reloadCounter, setReloadCounter] = useState(0);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const [strategiesResponse] = await Promise.all([
+      fetchEntries(StrategiesEndpoint),
+    ]);
+
+    setStrategies(strategiesResponse.strategies);
+  };
 
   useEffect(() => {
-    fetchStrategy()
-      .then((strategyResponse) => {
-        setStrategyResponse(strategyResponse);
-        setLoading(false);
-      })
+    fetchData()
       .catch((err) => {
         setError(err.message);
+      })
+      .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [reloadCounter]);
+
+  const handleEditClick = (strategy: StrategyDto) => {
+    setSelectedStrategy(strategy);
+    setOpen(true);
+  };
+  const handleDialogClose = (refresh: boolean) => {
+    setOpen(false);
+    setSelectedStrategy(null);
+    if (refresh) setReloadCounter(reloadCounter + 1);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <>
-      <Typography variant="h4">
+      <Grid container spacing={2}>
+        {strategies.map((strategy) => (
+          <Grid size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}>
+            <Card
+              key={strategy.id}
+              sx={[
+                (theme) => ({
+                  backgroundColor: theme.palette.secondary.main,
+                  color: theme.palette.text.primary,
+                  border: 1,
+                  borderColor: StrategyColor,
+                }),
+              ]}
+            >
+              <CardHeader
+                title={strategy.name}
+                style={{
+                  background: StrategyColor,
+                  color: "white",
+                }}
+              ></CardHeader>
+              <CardContent></CardContent>
+              <CardActions
+                sx={[
+                  (theme) => ({
+                    mt: "auto",
+                    justifyContent: "center",
+                  }),
+                ]}
+                style={{
+                  backgroundColor: alpha(StrategyColor, 0.7),
+                  paddingTop: "auto",
+                }}
+              >
+                <Stack
+                  direction={"row-reverse"}
+                  width={"100%"}
+                  justifyContent={"flex-start"}
+                >
+                  <Button
+                    size="small"
+                    onClick={() => handleEditClick(strategy)}
+                  >
+                    <SettingsIcon
+                      sx={[
+                        (theme) => ({
+                          color: theme.palette.text.primary,
+                        }),
+                      ]}
+                    />
+                  </Button>
+                </Stack>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+        <Grid
+          textAlign={"left"}
+          alignContent={"start"}
+          size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
+        >
+          <Button
+            size="large"
+            sx={[
+              (theme) => ({
+                color: "black",
+                backgroundColor: StrategyColor,
+                border: "1px solid",
+                borderRadius: "8px",
+              }),
+            ]}
+            onClick={() => {
+              setOpen(true);
+            }}
+          >
+            <AddIcon />
+          </Button>
+        </Grid>
+      </Grid>
+      <CreateOrUpdateStrategyComponent
+        existingStrategyId={selectedStrategy?.id}
+        handleDialogClose={handleDialogClose}
+        open={open}
+      />
+
+      {/* <Typography variant="h4">
         {strategyResponse!.name}
         <Button onClick={() => setShowSettings((prev) => !prev)}>
           <SettingsIcon />
         </Button>
       </Typography>
       {showSettings && <StrategySettingsComponent strategyResponse={strategyResponse!} />}
-      <CalculatedStrategyComponent />
+      <CalculatedStrategyComponent /> */}
     </>
   );
 }

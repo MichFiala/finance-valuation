@@ -97,7 +97,7 @@ export default function IncomesPage() {
   };
 
   const handleCreateEmptyIncome = () => {
-    const minId = Math.min(...incomes.map((income) => income.id));
+    const minId = incomes.length > 0 ? Math.min(...incomes.map((income) => income.id)) : 0;
     const emptyIncome = {
       id: minId > 0 ? -1 : minId - 1,
       name: "New Income",
