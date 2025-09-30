@@ -8,7 +8,6 @@ import "./i18n/config.ts";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./features/user/LoginPage";
 
-const locale = navigator.language;
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -52,7 +51,7 @@ const theme = createTheme({
 root.render(
   <React.StrictMode>
     {/* <React.Suspense fallback={<div>Loading...</div>}> */}
-    <ThemeProvider theme={theme} defaultMode="dark">
+    <ThemeProvider theme={theme} defaultMode={'dark'}>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />

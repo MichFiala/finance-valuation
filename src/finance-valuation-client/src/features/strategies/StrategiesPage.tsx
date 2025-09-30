@@ -71,7 +71,7 @@ export default function StrategiesPage() {
     <>
       <Grid container spacing={2}>
         {strategies.map((strategy) => (
-          <Grid size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}>
+          <Grid size={{ xs: 12, sm: 6, md: 2, lg: 2, xl: 2 }}>
             <Card
               key={strategy.id}
               sx={[

@@ -12,7 +12,7 @@ export async function fetchEntries(endpoint: string) {
 
 export async function createOrUpdate(endpoint: string, body: any) {
   const {id, ...rest} = body;
-  if (id !== undefined) {
+  if (id !== undefined && id !== null && id > 0) {
     return await update(endpoint, body.id, {...rest})
   }
   return await create(endpoint, {...rest});
