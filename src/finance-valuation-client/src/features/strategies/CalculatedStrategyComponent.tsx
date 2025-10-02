@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchCalculatedStrategy } from "./strategiesApi";
-import {
-  DataGrid,
-  GridColDef,
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { IncomesResponseDto } from "../incomes/incomeModel";
 import { fetchIncomes } from "../incomes/incomesApi";
 import {
@@ -13,9 +10,16 @@ import {
   Select,
   MenuItem,
   Button,
+  AppBar,
+  Dialog,
+  IconButton,
+  Toolbar,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { CalculationStepConfigurationDto } from "./strategyCalculatedModel";
 import { getCalculationStepRowClassName, sx } from "./rowStyleSettings";
+import CloseIcon from "@mui/icons-material/Close";
 
 const columns: GridColDef<CalculationStepConfigurationDto>[] = [
   {
@@ -73,14 +77,15 @@ const columns: GridColDef<CalculationStepConfigurationDto>[] = [
   },
 ];
 
-export default function CalculatedStrategyComponent() {
+export default function CalculatedStrategyComponent({strategyId, open, handleDialogClose} : {strategyId: number, open: boolean,handleDialogClose: () => void}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedIncomeId, setSelectedIncomeId] = useState<number | null>(null);
   const [incomesResponse, setIncomesResponse] =
     useState<IncomesResponseDto | null>(null);
   const [rows, setRows] = useState<CalculationStepConfigurationDto[]>([]);
-  const [displayCalculatedStrategy, setDisplayCalculatedStrategy] = useState(false);
+  const [displayCalculatedStrategy, setDisplayCalculatedStrategy] =
+    useState(false);
 
   useEffect(() => {
     fetchIncomes()
@@ -97,14 +102,14 @@ export default function CalculatedStrategyComponent() {
   }, []);
 
   const handleCalculate = async () => {
-    fetchCalculatedStrategy(selectedIncomeId!)
+    fetchCalculatedStrategy(strategyId, selectedIncomeId!)
       .then((response) => {
         setRows(response.strategyConfigurationsCalculationSteps);
         setDisplayCalculatedStrategy(true);
       })
       .catch((err) => {
         setError(err.message);
-      })
+      });
   };
 
   const totalContributionAmount = rows.reduce(
@@ -121,58 +126,113 @@ export default function CalculatedStrategyComponent() {
 
   return (
     <>
-      <Stack direction={"row"}>
-        <FormControl>
-          <InputLabel id="income-select-label">Income</InputLabel>
-          <Select
-            labelId="income-select-label"
-            id="income-select"
-            value={selectedIncomeId}
-            label="Income"
-            onChange={(e) => setSelectedIncomeId(e.target.value as number)}
+      <Dialog
+        fullScreen
+        open={open}
+        // slots={{
+        //   transition: Transition,
+        // }}
+      >
+        <AppBar sx={{ position: "relative" }}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleDialogClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <DialogContent>
+          <Stack direction={"row"}>
+            <FormControl>
+              <InputLabel id="income-select-label">Income</InputLabel>
+              <Select
+                labelId="income-select-label"
+                id="income-select"
+                value={selectedIncomeId}
+                label="Income"
+                onChange={(e) => setSelectedIncomeId(e.target.value as number)}
+              >
+                {incomesResponse?.incomes.map((income) => (
+                  <MenuItem key={income.id} value={income.id}>
+                    {income.name} -{" "}
+                    {new Date(income.date).toLocaleDateString("cs-CZ", {
+                      month: "long",
+                    })}{" "}
+                    -{" "}
+                    {income.amount.toLocaleString("cs-CZ", {
+                      style: "currency",
+                      currency: "CZK",
+                    })}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button onClick={() => handleCalculate()}>Calculate</Button>
+          </Stack>
+          {displayCalculatedStrategy && (
+            <>
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                disableRowSelectionOnClick={false}
+                hideFooter={true}
+                getRowClassName={getCalculationStepRowClassName}
+                sx={sx}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  background: "#f5f5f5",
+                  padding: "8px",
+                  marginTop: "4px",
+                  fontWeight: "bold",
+                }}
+              >
+                <span style={{ minWidth: 150, textAlign: "right" }}>
+                  Total Contribution (CZK):{" "}
+                  {totalContributionAmount.toLocaleString("cs-CZ", {
+                    style: "currency",
+                    currency: "CZK",
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+                <span
+                  style={{ minWidth: 180, textAlign: "right", marginLeft: 32 }}
+                >
+                  Total Contribution (%):{" "}
+                  {totalContributionPercentage.toLocaleString("cs-CZ", {
+                    style: "percent",
+                    minimumFractionDigits: 0,
+                  })}
+                </span>
+              </div>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => handleDialogClose()}
+            sx={[
+              (theme) => ({
+                color: theme.palette.text.primary,
+              }),
+            ]}
           >
-            {incomesResponse?.incomes.map((income) => (
-              <MenuItem key={income.id} value={income.id}>
-                {income.name} -{" "}
-                {new Date(income.date).toLocaleDateString("cs-CZ", {
-                  month: "long",
-                })} - {income.amount.toLocaleString("cs-CZ", {
-                  style: "currency",
-                  currency: "CZK",
-                })}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <Button onClick={() => handleCalculate()}>Calculate</Button>
-      </Stack>
-      {displayCalculatedStrategy && (
-        <>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          disableRowSelectionOnClick={false}
-          hideFooter={true}
-          getRowClassName={getCalculationStepRowClassName}
-          sx={sx}
-        />
-        <div style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            background: "#f5f5f5",
-            padding: "8px",
-            marginTop: "4px",
-            fontWeight: "bold"
-          }}>
-            <span style={{ minWidth: 150, textAlign: "right" }}>
-              Total Contribution (CZK): {totalContributionAmount.toLocaleString("cs-CZ", { style: "currency", currency: "CZK", minimumFractionDigits: 0 })}
-            </span>
-            <span style={{ minWidth: 180, textAlign: "right", marginLeft: 32 }}>
-              Total Contribution (%): {totalContributionPercentage.toLocaleString("cs-CZ", { style: "percent", minimumFractionDigits: 0 })}
-            </span>
-          </div>
-          </>
-      )}
+            <CloseIcon
+              sx={[
+                (theme) => ({
+                  color: theme.palette.text.primary,
+                }),
+              ]}
+            />
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

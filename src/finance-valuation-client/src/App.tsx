@@ -65,7 +65,7 @@ function App() {
 
   return (
     <>
-      {loading && (
+      {loading &&
         <Box
           sx={[
             (theme) => ({
@@ -92,7 +92,7 @@ function App() {
             />
           </Grid>
         </Box>
-      )}
+      }
       {!loading && (
         <Box
           sx={{
@@ -104,7 +104,6 @@ function App() {
             alignContent: "center",
           }}
         >
-          (
           <Stack width={"100%"} padding={5} spacing={1}>
             <Grid container>
               <Grid size={1} textAlign={'center'} alignContent={'center'} alignItems={'center'}>
@@ -249,7 +248,6 @@ function App() {
               </Grid>
             </Grid>
           </Stack>
-          )
         </Box>
       )}
     </>

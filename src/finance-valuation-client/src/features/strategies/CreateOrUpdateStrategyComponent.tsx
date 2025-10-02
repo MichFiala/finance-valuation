@@ -26,7 +26,11 @@ import { debtColor } from "../debts/debtStylesSettings";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { DebtDto } from "../debts/debtModel";
-import { create, createOrUpdate, deleteEntry, fetchEntries } from "../../shared/crudApi";
+import {
+  createOrUpdate,
+  deleteEntry,
+  fetchEntries,
+} from "../../shared/crudApi";
 import { DebtsEndpoint } from "../debts/debtApi";
 import { SavingsEndpoint } from "../savings/savingsApi";
 import { SavingsDto } from "../savings/savingsModel";
@@ -42,7 +46,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 export default function CreateOrUpdateStrategyComponent({
   existingStrategyId,
   open,
-  handleDialogClose
+  handleDialogClose,
 }: {
   existingStrategyId?: number | null;
   open: boolean;
@@ -97,11 +101,45 @@ export default function CreateOrUpdateStrategyComponent({
       });
   }, [existingStrategyId]);
 
-  const handleReferenceChange = (rowId: number, value: any) => {
+  const handleReferenceChange = (
+    rowId: number,
+    value: number,
+    configurationType: StrategyConfigurationType
+  ) => {
+    let name: string;
+    let monthlyContributionAmount: number | undefined;
+
+    switch (configurationType) {
+      case StrategyConfigurationType.Debt:
+        const debt = debts.find((e) => e.id === value)!;
+        name = debt.name;
+        monthlyContributionAmount = debt.payment ?? undefined;
+        break;
+      case StrategyConfigurationType.Saving:
+        const saving = savings.find((e) => e.id === value)!;
+        name = saving.name;
+        break;
+      case StrategyConfigurationType.Investment:
+        const investment = investments.find((e) => e.id === value)!;
+        name = investment.name;
+        break;
+      case StrategyConfigurationType.Spending:
+        const spending = spendings.find((e) => e.id === value)!;
+        name = spending.name;
+        monthlyContributionAmount = spending.amount;
+        break;
+    }
     setStrategy({
       ...strategy,
       strategyConfigurations: strategy.strategyConfigurations.map((r) =>
-        r.id === rowId ? { ...r, referenceId: value } : r
+        r.id === rowId
+          ? {
+              ...r,
+              referenceId: value,
+              monthlyContributionAmount: monthlyContributionAmount,
+              name: name,
+            }
+          : r
       ),
     });
   };
@@ -135,20 +173,27 @@ export default function CreateOrUpdateStrategyComponent({
       field: "name",
       headerName: "Name",
       width: 150,
-      editable: true,
+      editable: false,
       sortable: false,
       flex: 1,
     },
     {
       field: "referenceId",
-      width: 150,
+      flex: 1,
+
       headerName: "Reference",
       renderCell: (params) => (
         <Select
           fullWidth
           value={params.row.referenceId || ""}
           label={params.row.type}
-          onChange={(e) => handleReferenceChange(params.row.id, e.target.value)}
+          onChange={(e) =>
+            handleReferenceChange(
+              params.row.id,
+              e.target.value,
+              params.row.type
+            )
+          }
         >
           {params.row.type === StrategyConfigurationType.Debt &&
             debts.map((debt) => (
@@ -181,7 +226,6 @@ export default function CreateOrUpdateStrategyComponent({
       field: "monthlyContributionAmount",
       headerName: "Monthly Contribution (CZK)",
       type: "number",
-      width: 180,
       editable: true,
       sortable: false,
       valueFormatter: (value: number) =>
@@ -196,7 +240,6 @@ export default function CreateOrUpdateStrategyComponent({
       field: "monthlyContributionPercentage",
       headerName: "Monthly Contribution (%)",
       type: "number",
-      width: 180,
       editable: true,
       sortable: false,
       valueFormatter: (value: number) =>
@@ -206,6 +249,11 @@ export default function CreateOrUpdateStrategyComponent({
         }),
       flex: 1,
     },
+    {
+      field: 'action',
+      headerName: '',
+      renderCell: (props) => <IconButton onClick={() => handleRowDelete(props.row.id)}><DeleteIcon/></IconButton>
+    }
   ];
 
   const handleMoveRow = (id: number, direction: number) => {
@@ -222,11 +270,14 @@ export default function CreateOrUpdateStrategyComponent({
       ...strategy,
       strategyConfigurations: [...changedOrderConfigurations],
     });
-    // setStrategy({...strategy, strategyConfigurations: strategy.strategyConfigurations(prev) => {
-    //   const oldIndex = prev.findIndex((r) => r.id === id);
-    //   return arrayMove(prev, oldIndex, oldIndex + direction);
-    // })};
   };
+
+  const handleRowDelete = (id: number) => {
+    setStrategy({
+      ...strategy,
+      strategyConfigurations: [...strategy.strategyConfigurations.filter(configuration => configuration.id !== id)],
+    });
+  }
 
   const handleSaveClick = () => {
     createOrUpdate(StrategiesEndpoint, { ...strategy });
@@ -270,7 +321,11 @@ export default function CreateOrUpdateStrategyComponent({
         }),
       ]}
     >
-      {existingStrategyId ? <DialogTitle> Update {strategy.name} </DialogTitle> : <DialogTitle> Create new</DialogTitle>}
+      {existingStrategyId ? (
+        <DialogTitle> Update {strategy.name} </DialogTitle>
+      ) : (
+        <DialogTitle> Create new</DialogTitle>
+      )}
       <DialogContent>
         <Stack spacing={1}>
           <Stack direction={"row-reverse"} spacing={2}>
@@ -352,14 +407,13 @@ export default function CreateOrUpdateStrategyComponent({
             disableRowSelectionOnClick
             hideFooter={true}
             processRowUpdate={(newRow) => {
-              // nahraď starý řádek novým
               setStrategy((prev) => ({
                 ...prev,
                 strategyConfigurations: prev.strategyConfigurations.map((row) =>
                   row.id === newRow.id ? newRow : row
                 ),
               }));
-              return newRow; // důležité pro MUI, jinak UI rollbackne
+              return newRow; 
             }}
             getRowClassName={getStrategyConfigurationRowClassName}
             sx={sx}

@@ -7,20 +7,17 @@ import {
   CardContent,
   CardHeader,
   Grid,
-  Typography,
+  IconButton,
 } from "@mui/material";
 import { StrategyDto } from "./strategyModel";
 import { StrategiesEndpoint } from "./strategiesApi";
 import { fetchEntries } from "../../shared/crudApi";
 import AddIcon from "@mui/icons-material/Add";
 import { Stack } from "@mui/material";
-import CreateStrategyComponent from "./CreateOrUpdateStrategyComponent";
 import CreateOrUpdateStrategyComponent from "./CreateOrUpdateStrategyComponent";
-import { DomainCardModuleTemplate } from "../../shared/DomainCardModuleTemplate";
 import SettingsIcon from "@mui/icons-material/Settings";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import DeleteIcon from "@mui/icons-material/Delete";
-import CloseIcon from "@mui/icons-material/Close";
+import CalculatedStrategyComponent from "./CalculatedStrategyComponent";
+import AltRouteIcon from '@mui/icons-material/AltRoute';
 
 const StrategyColor = "#2397a7ff";
 
@@ -33,6 +30,7 @@ export default function StrategiesPage() {
     null
   );
   const [open, setOpen] = useState<boolean>(false);
+  const [calculatedOpen, setCalculatedOpen] = useState<boolean>(false);
   const [reloadCounter, setReloadCounter] = useState(0);
 
   const fetchData = async () => {
@@ -108,7 +106,7 @@ export default function StrategiesPage() {
                   width={"100%"}
                   justifyContent={"flex-start"}
                 >
-                  <Button
+                  <IconButton
                     size="small"
                     onClick={() => handleEditClick(strategy)}
                   >
@@ -119,7 +117,8 @@ export default function StrategiesPage() {
                         }),
                       ]}
                     />
-                  </Button>
+                  </IconButton>
+                  <IconButton onClick={() => {setCalculatedOpen(true); setSelectedStrategy(strategy)}}><AltRouteIcon/></IconButton>
                 </Stack>
               </CardActions>
             </Card>
@@ -153,6 +152,7 @@ export default function StrategiesPage() {
         handleDialogClose={handleDialogClose}
         open={open}
       />
+      <CalculatedStrategyComponent key={selectedStrategy?.id} strategyId={selectedStrategy?.id!} open={calculatedOpen} handleDialogClose={() => {setCalculatedOpen(false); setSelectedStrategy(null)} }/>
 
       {/* <Typography variant="h4">
         {strategyResponse!.name}

@@ -48,4 +48,7 @@ export const sx = {
         backgroundColor: alpha(debtColor, 0.9),
         color: debtTextColor
     },
+    "& .MuiDataGrid-row:hover": {
+      backgroundColor: "#ffffffc0", // zruší hover efekt
+    },
 };

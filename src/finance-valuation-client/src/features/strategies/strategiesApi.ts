@@ -17,9 +17,9 @@ export async function fetchStrategy(id: number) {
   return response.json() as Promise<StrategyDto>;
 }
 
-export async function fetchCalculatedStrategy(incomeId: number) {
+export async function fetchCalculatedStrategy(strategyId: number, incomeId: number) {
   const apiUrl =  import.meta.env.VITE_APP_API_URL || '';
-  const response = await fetch(`${apiUrl}/${StrategiesEndpoint}/1/calculate?incomeId=${incomeId}`,{
+  const response = await fetch(`${apiUrl}/${StrategiesEndpoint}/${strategyId}/calculate?incomeId=${incomeId}`,{
     method: "GET",
     credentials: "include",
   });

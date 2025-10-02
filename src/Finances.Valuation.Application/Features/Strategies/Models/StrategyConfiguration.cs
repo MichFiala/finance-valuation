@@ -30,7 +30,7 @@ internal class StrategyConfiguration : IUserRelated
 
     public required string UserId { get; set; }
 
-    public User.Models.User? User { get; set; }    
+    public User.Models.User? User { get; set; }
 
     private static IReadOnlyDictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>> AssingFunctions = new Dictionary<StrategyConfigurationType, Action<StrategyConfiguration, int>>
     {
@@ -70,4 +70,7 @@ internal class StrategyConfiguration : IUserRelated
 
     public static StrategyConfiguration Create(Strategy strategy, StrategyConfigurationDto itemDto, int priority) =>
         Create(strategy.Id, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage, strategy.UserId);
+        
+    public static StrategyConfiguration Create(int strategyId, string userId, StrategyConfigurationDto itemDto, int priority) =>
+        Create(strategyId, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage, userId);
 }

@@ -1,6 +1,8 @@
+using Finances.Valuation.Application.Features.Shared.Models;
+
 namespace Finances.Valuation.Application.Features.Strategies.Models;
 
-public class StrategyDto
+public class StrategyDto : IEntityDto
 {
     public int Id { get; set; }
     public required string Name { get; set; }
