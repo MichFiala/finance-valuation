@@ -2,9 +2,7 @@ import { Button, Divider, Grid, Typography } from "@mui/material";
 import { useState, useEffect } from "react";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { SpendingsDto, SpendingsFrequency } from "./spendingsModel";
-import {
-  SpendingsEndpoint,
-} from "./spendingsApi";
+import { SpendingsEndpoint } from "./spendingsApi";
 import {
   spendingMonthlyColor,
   spendingMonthlyTextColor,
@@ -14,7 +12,11 @@ import {
   spendingYearlyTextColor,
 } from "./spendingStylesSettings";
 import AddIcon from "@mui/icons-material/Add";
-import { createOrUpdate, deleteEntry, fetchEntries } from "../../shared/crudApi";
+import {
+  createOrUpdate,
+  deleteEntry,
+  fetchEntries,
+} from "../../shared/crudApi";
 import { SpendingsCardModule } from "./SpendingsCardModule";
 
 export const SpendingsModule = (
@@ -70,10 +72,14 @@ export const SpendingsModule = (
 
   return (
     <>
-      <Typography variant="h6" component="h6" sx={[(theme) => ({color: theme.palette.text.primary})]}>
+      <Typography
+        variant="h6"
+        component="h6"
+        sx={[(theme) => ({ color: theme.palette.text.primary })]}
+      >
         Monthly
       </Typography>
-      <Divider sx={[(theme) => ({color: theme.palette.text.primary})]}/>
+      <Divider sx={[(theme) => ({ color: theme.palette.text.primary })]} />
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Monthly")
@@ -81,7 +87,10 @@ export const SpendingsModule = (
             a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
           )
           .map((spending) => (
-            <Grid key={`Spending-${spending.id}`} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
+            <Grid
+              key={`Spending-${spending.id}`}
+              size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
+            >
               <SpendingsCardModule
                 entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
@@ -93,7 +102,11 @@ export const SpendingsModule = (
               />
             </Grid>
           ))}
-        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
+        <Grid
+          textAlign={"left"}
+          alignContent={"start"}
+          size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}
+        >
           <Button
             size="large"
             style={{
@@ -104,15 +117,19 @@ export const SpendingsModule = (
               handleCreateEmptySpending("Monthly" as SpendingsFrequency)
             }
           >
-            <AddIcon/>
+            <AddIcon />
           </Button>
         </Grid>
       </Grid>
 
-      <Typography variant="h6" component="h6" sx={[(theme) => ({color: theme.palette.text.primary})]}>
+      <Typography
+        variant="h6"
+        component="h6"
+        sx={[(theme) => ({ color: theme.palette.text.primary })]}
+      >
         Quaterly
       </Typography>
-      <Divider sx={[(theme) => ({color: theme.palette.text.primary})]}/>
+      <Divider sx={[(theme) => ({ color: theme.palette.text.primary })]} />
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Quaterly")
@@ -120,7 +137,10 @@ export const SpendingsModule = (
             a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
           )
           .map((spending) => (
-            <Grid key={`Spending-${spending.id}`} size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}>
+            <Grid
+              key={`Spending-${spending.id}`}
+              size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}
+            >
               <SpendingsCardModule
                 entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
@@ -132,7 +152,11 @@ export const SpendingsModule = (
               />
             </Grid>
           ))}
-        <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}>
+        <Grid
+          textAlign={"left"}
+          alignContent={"start"}
+          size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}
+        >
           <Button
             size="large"
             style={{
@@ -143,14 +167,18 @@ export const SpendingsModule = (
               handleCreateEmptySpending("Quaterly" as SpendingsFrequency)
             }
           >
-            <AddIcon/>
+            <AddIcon />
           </Button>
         </Grid>
       </Grid>
-      <Typography variant="h6" component="h6" sx={[(theme) => ({color: theme.palette.text.primary})]}>
+      <Typography
+        variant="h6"
+        component="h6"
+        sx={[(theme) => ({ color: theme.palette.text.primary })]}
+      >
         Yearly
       </Typography>
-      <Divider sx={[(theme) => ({color: theme.palette.text.primary})]}/>
+      <Divider sx={[(theme) => ({ color: theme.palette.text.primary })]} />
       <Grid container spacing={2}>
         {spendings
           .filter((spending) => spending.frequency === "Yearly")
@@ -158,7 +186,10 @@ export const SpendingsModule = (
             a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
           )
           .map((spending) => (
-            <Grid key={`Spending-${spending.id}`} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
+            <Grid
+              key={`Spending-${spending.id}`}
+              size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
+            >
               <SpendingsCardModule
                 entryDto={spending}
                 handleCreateOrUpdate={handleCreateOrUpdate}
@@ -171,7 +202,11 @@ export const SpendingsModule = (
             </Grid>
           ))}
         {enableEditing && (
-          <Grid textAlign={"left"} alignContent={"start"} size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}>
+          <Grid
+            textAlign={"left"}
+            alignContent={"start"}
+            size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}
+          >
             <Button
               size="large"
               style={{
@@ -182,7 +217,7 @@ export const SpendingsModule = (
                 handleCreateEmptySpending("Yearly" as SpendingsFrequency)
               }
             >
-              <AddIcon/>
+              <AddIcon />
             </Button>
           </Grid>
         )}
