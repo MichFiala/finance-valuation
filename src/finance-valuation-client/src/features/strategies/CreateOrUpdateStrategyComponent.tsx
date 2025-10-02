@@ -12,11 +12,14 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogProps,
   DialogTitle,
   IconButton,
   MenuItem,
   Select,
   Stack,
+  TextField,
+  Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { savingsColor } from "../savings/savingStylesSettings";
@@ -42,7 +45,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { InvestmentsEndpoint } from "../investments/investmentsApi";
 import { InvestmentDto } from "../investments/investmentModel";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import ContentPasteGoIcon from "@mui/icons-material/ContentPasteGo";
+import CreateIcon from "@mui/icons-material/Create";
+import CheckIcon from "@mui/icons-material/Check";
 export default function CreateOrUpdateStrategyComponent({
   existingStrategyId,
   open,
@@ -60,8 +65,9 @@ export default function CreateOrUpdateStrategyComponent({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [strategy, setStrategy] = useState<StrategyDto>({} as StrategyDto);
-  // const [strategyConfigurations, setStrategyConfigurations] = useState<StrategyConfigurationDto[]>([]);
-
+  const [jsonValue, setJsonValue] = useState<string | null>(null);
+  const [openJsonDialog, setOpenJsonDialog] = useState<boolean>(false);
+  
   const fetchData = async () => {
     setLoading(true);
     const newStrategy = {
@@ -250,10 +256,14 @@ export default function CreateOrUpdateStrategyComponent({
       flex: 1,
     },
     {
-      field: 'action',
-      headerName: '',
-      renderCell: (props) => <IconButton onClick={() => handleRowDelete(props.row.id)}><DeleteIcon/></IconButton>
-    }
+      field: "action",
+      headerName: "",
+      renderCell: (props) => (
+        <IconButton onClick={() => handleRowDelete(props.row.id)}>
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
   ];
 
   const handleMoveRow = (id: number, direction: number) => {
@@ -275,9 +285,13 @@ export default function CreateOrUpdateStrategyComponent({
   const handleRowDelete = (id: number) => {
     setStrategy({
       ...strategy,
-      strategyConfigurations: [...strategy.strategyConfigurations.filter(configuration => configuration.id !== id)],
+      strategyConfigurations: [
+        ...strategy.strategyConfigurations.filter(
+          (configuration) => configuration.id !== id
+        ),
+      ],
     });
-  }
+  };
 
   const handleSaveClick = () => {
     createOrUpdate(StrategiesEndpoint, { ...strategy });
@@ -311,154 +325,202 @@ export default function CreateOrUpdateStrategyComponent({
   };
 
   return (
-    <Dialog
-      fullScreen
-      open={open}
-      onClose={() => ""}
-      sx={[
-        (theme) => ({
-          color: theme.palette.text.primary,
-        }),
-      ]}
-    >
-      {existingStrategyId ? (
-        <DialogTitle> Update {strategy.name} </DialogTitle>
-      ) : (
-        <DialogTitle> Create new</DialogTitle>
-      )}
-      <DialogContent>
-        <Stack spacing={1}>
-          <Stack direction={"row-reverse"} spacing={2}>
-            <Button
-              onClick={() => handleAddClick(StrategyConfigurationType.Debt)}
-              sx={[
-                (theme) => ({
-                  color: theme.palette.text.primary,
-                  backgroundColor: debtColor,
-                }),
-              ]}
-            >
-              <AddIcon
-                sx={[
-                  (theme) => ({
-                    color: theme.palette.text.primary,
-                  }),
-                ]}
-              />
-            </Button>
-            <Button
-              onClick={() => handleAddClick(StrategyConfigurationType.Spending)}
-              sx={[
-                (theme) => ({
-                  color: theme.palette.text.primary,
-                  backgroundColor: spendingColor,
-                }),
-              ]}
-            >
-              <AddIcon
-                sx={[
-                  (theme) => ({
-                    color: theme.palette.text.primary,
-                  }),
-                ]}
-              />
-            </Button>
-            <Button
-              onClick={() =>
-                handleAddClick(StrategyConfigurationType.Investment)
-              }
-              sx={[
-                (theme) => ({
-                  color: theme.palette.text.primary,
-                  backgroundColor: investmentColor,
-                }),
-              ]}
-            >
-              <AddIcon
-                sx={[
-                  (theme) => ({
-                    color: theme.palette.text.primary,
-                  }),
-                ]}
-              />
-            </Button>
-            <Button
-              onClick={() => handleAddClick(StrategyConfigurationType.Saving)}
-              sx={[
-                (theme) => ({
-                  color: theme.palette.text.primary,
-                  backgroundColor: savingsColor,
-                }),
-              ]}
-            >
-              <AddIcon
-                sx={[
-                  (theme) => ({
-                    color: theme.palette.text.primary,
-                  }),
-                ]}
-              />
-            </Button>
-          </Stack>
-
-          <DataGrid
-            rows={strategy.strategyConfigurations}
-            columns={columns}
-            disableRowSelectionOnClick
-            hideFooter={true}
-            processRowUpdate={(newRow) => {
-              setStrategy((prev) => ({
-                ...prev,
-                strategyConfigurations: prev.strategyConfigurations.map((row) =>
-                  row.id === newRow.id ? newRow : row
-                ),
-              }));
-              return newRow; 
-            }}
-            getRowClassName={getStrategyConfigurationRowClassName}
-            sx={sx}
-          />
-        </Stack>
-      </DialogContent>
-      <DialogActions>
-        {existingStrategyId && (
-          <Button
-            size="small"
-            onClick={() => handleDeleteClick()}
-            style={{ color: "red" }}
-          >
-            <DeleteIcon />
-          </Button>
+    <>
+      <Dialog
+        fullScreen
+        open={open}
+        onClose={() => ""}
+        sx={[
+          (theme) => ({
+            color: theme.palette.text.primary,
+          }),
+        ]}
+      >
+        {existingStrategyId ? (
+          <DialogTitle> Update {strategy.name} </DialogTitle>
+        ) : (
+          <DialogTitle> Create new</DialogTitle>
         )}
-        <Button
-          onClick={handleSaveClick}
-          type="submit"
-          form="subscription-form"
-          sx={[
-            (theme) => ({
-              color: "green",
-            }),
-          ]}
-        >
-          <SaveAltIcon />
-        </Button>
-        <Button
-          onClick={() => handleDialogClose(false)}
-          sx={[
-            (theme) => ({
-              color: theme.palette.text.primary,
-            }),
-          ]}
-        >
-          <CloseIcon
+        <DialogContent>
+          <Stack spacing={1}>
+            <Stack direction={"row-reverse"} spacing={2}>
+              <Tooltip title="Load from JSON">
+                <IconButton
+                  onClick={() => setOpenJsonDialog(true)}
+                  sx={[
+                    (theme) => ({
+                      color: theme.palette.text.primary,
+                      backgroundColor: theme.palette.primary.main,
+                    }),
+                  ]}
+                >
+                  <ContentPasteGoIcon />
+                </IconButton>
+              </Tooltip>
+              <Button
+                onClick={() => handleAddClick(StrategyConfigurationType.Debt)}
+                sx={[
+                  (theme) => ({
+                    color: theme.palette.text.primary,
+                    backgroundColor: debtColor,
+                  }),
+                ]}
+              >
+                <AddIcon
+                  sx={[
+                    (theme) => ({
+                      color: theme.palette.text.primary,
+                    }),
+                  ]}
+                />
+              </Button>
+              <Button
+                onClick={() =>
+                  handleAddClick(StrategyConfigurationType.Spending)
+                }
+                sx={[
+                  (theme) => ({
+                    color: theme.palette.text.primary,
+                    backgroundColor: spendingColor,
+                  }),
+                ]}
+              >
+                <AddIcon
+                  sx={[
+                    (theme) => ({
+                      color: theme.palette.text.primary,
+                    }),
+                  ]}
+                />
+              </Button>
+              <Button
+                onClick={() =>
+                  handleAddClick(StrategyConfigurationType.Investment)
+                }
+                sx={[
+                  (theme) => ({
+                    color: theme.palette.text.primary,
+                    backgroundColor: investmentColor,
+                  }),
+                ]}
+              >
+                <AddIcon
+                  sx={[
+                    (theme) => ({
+                      color: theme.palette.text.primary,
+                    }),
+                  ]}
+                />
+              </Button>
+              <Button
+                onClick={() => handleAddClick(StrategyConfigurationType.Saving)}
+                sx={[
+                  (theme) => ({
+                    color: theme.palette.text.primary,
+                    backgroundColor: savingsColor,
+                  }),
+                ]}
+              >
+                <AddIcon
+                  sx={[
+                    (theme) => ({
+                      color: theme.palette.text.primary,
+                    }),
+                  ]}
+                />
+              </Button>
+            </Stack>
+
+            <DataGrid
+              rows={strategy.strategyConfigurations}
+              columns={columns}
+              disableRowSelectionOnClick
+              hideFooter={true}
+              processRowUpdate={(newRow) => {
+                setStrategy((prev) => ({
+                  ...prev,
+                  strategyConfigurations: prev.strategyConfigurations.map(
+                    (row) => (row.id === newRow.id ? newRow : row)
+                  ),
+                }));
+                return newRow;
+              }}
+              getRowClassName={getStrategyConfigurationRowClassName}
+              sx={sx}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          {existingStrategyId && (
+            <Button
+              size="small"
+              onClick={() => handleDeleteClick()}
+              style={{ color: "red" }}
+            >
+              <DeleteIcon />
+            </Button>
+          )}
+          <Button
+            onClick={handleSaveClick}
+            type="submit"
+            form="subscription-form"
+            sx={[
+              (theme) => ({
+                color: "green",
+              }),
+            ]}
+          >
+            <SaveAltIcon />
+          </Button>
+          <Button
+            onClick={() => handleDialogClose(false)}
             sx={[
               (theme) => ({
                 color: theme.palette.text.primary,
               }),
             ]}
-          />
-        </Button>
-      </DialogActions>
-    </Dialog>
+          >
+            <CloseIcon
+              sx={[
+                (theme) => ({
+                  color: theme.palette.text.primary,
+                }),
+              ]}
+            />
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={openJsonDialog} maxWidth={"xl"} fullWidth={true}>
+        <DialogContent>
+            <TextField 
+              fullWidth={true}
+              id="outlined-multiline-static"
+              label="JSON"
+              multiline
+              rows={20}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setJsonValue(event.target.value);
+              }}
+            />
+        </DialogContent>
+        <DialogActions>
+          <IconButton
+            onClick={() => {
+              if (!jsonValue) return;
+
+              const strategyFromJson: StrategyDto = JSON.parse(jsonValue);
+
+              setStrategy(strategyFromJson);
+              setOpenJsonDialog(false);
+            }}
+          >
+            <CheckIcon />
+          </IconButton>
+          <IconButton onClick={() => setOpenJsonDialog(false)}>
+            <CloseIcon />
+          </IconButton>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }

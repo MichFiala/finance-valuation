@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   alpha,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -10,15 +9,15 @@ import {
   IconButton,
 } from "@mui/material";
 import { StrategyDto } from "./strategyModel";
-import { StrategiesEndpoint } from "./strategiesApi";
+import { fetchStrategy, StrategiesEndpoint } from "./strategiesApi";
 import { fetchEntries } from "../../shared/crudApi";
 import AddIcon from "@mui/icons-material/Add";
 import { Stack } from "@mui/material";
 import CreateOrUpdateStrategyComponent from "./CreateOrUpdateStrategyComponent";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CalculatedStrategyComponent from "./CalculatedStrategyComponent";
-import AltRouteIcon from '@mui/icons-material/AltRoute';
-
+import AltRouteIcon from "@mui/icons-material/AltRoute";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 const StrategyColor = "#2397a7ff";
 
 export default function StrategiesPage() {
@@ -118,7 +117,25 @@ export default function StrategiesPage() {
                       ]}
                     />
                   </IconButton>
-                  <IconButton onClick={() => {setCalculatedOpen(true); setSelectedStrategy(strategy)}}><AltRouteIcon/></IconButton>
+                  <IconButton
+                    onClick={() => {
+                      setCalculatedOpen(true);
+                      setSelectedStrategy(strategy);
+                    }}
+                  >
+                    <AltRouteIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      fetchStrategy(strategy.id).then((data) => {
+                        const { id, ...rest } = data;
+
+                        navigator.clipboard.writeText(JSON.stringify(rest));
+                      });
+                    }}
+                  >
+                    <ContentCopyIcon />
+                  </IconButton>
                 </Stack>
               </CardActions>
             </Card>
@@ -129,7 +146,7 @@ export default function StrategiesPage() {
           alignContent={"start"}
           size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
         >
-          <Button
+          <IconButton
             size="large"
             sx={[
               (theme) => ({
@@ -144,7 +161,7 @@ export default function StrategiesPage() {
             }}
           >
             <AddIcon />
-          </Button>
+          </IconButton>
         </Grid>
       </Grid>
       <CreateOrUpdateStrategyComponent
@@ -152,16 +169,15 @@ export default function StrategiesPage() {
         handleDialogClose={handleDialogClose}
         open={open}
       />
-      <CalculatedStrategyComponent key={selectedStrategy?.id} strategyId={selectedStrategy?.id!} open={calculatedOpen} handleDialogClose={() => {setCalculatedOpen(false); setSelectedStrategy(null)} }/>
-
-      {/* <Typography variant="h4">
-        {strategyResponse!.name}
-        <Button onClick={() => setShowSettings((prev) => !prev)}>
-          <SettingsIcon />
-        </Button>
-      </Typography>
-      {showSettings && <StrategySettingsComponent strategyResponse={strategyResponse!} />}
-      <CalculatedStrategyComponent /> */}
+      <CalculatedStrategyComponent
+        key={selectedStrategy?.id}
+        strategyId={selectedStrategy?.id!}
+        open={calculatedOpen}
+        handleDialogClose={() => {
+          setCalculatedOpen(false);
+          setSelectedStrategy(null);
+        }}
+      />
     </>
   );
 }
