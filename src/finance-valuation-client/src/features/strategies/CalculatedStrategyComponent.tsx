@@ -17,7 +17,10 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { CalculationStepConfigurationDto } from "./strategyCalculatedModel";
+import {
+  CalculatedStrategyResponseDto,
+  CalculationStepConfigurationDto,
+} from "./strategyCalculatedModel";
 import { getCalculationStepRowClassName, sx } from "./rowStyleSettings";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -77,13 +80,22 @@ const columns: GridColDef<CalculationStepConfigurationDto>[] = [
   },
 ];
 
-export default function CalculatedStrategyComponent({strategyId, open, handleDialogClose} : {strategyId: number, open: boolean,handleDialogClose: () => void}) {
+export default function CalculatedStrategyComponent({
+  strategyId,
+  open,
+  handleDialogClose,
+}: {
+  strategyId: number;
+  open: boolean;
+  handleDialogClose: () => void;
+}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedIncomeId, setSelectedIncomeId] = useState<number | null>(null);
   const [incomesResponse, setIncomesResponse] =
     useState<IncomesResponseDto | null>(null);
-  const [rows, setRows] = useState<CalculationStepConfigurationDto[]>([]);
+  const [strategy, setStrategy] =
+    useState<CalculatedStrategyResponseDto | null>(null);
   const [displayCalculatedStrategy, setDisplayCalculatedStrategy] =
     useState(false);
 
@@ -104,7 +116,7 @@ export default function CalculatedStrategyComponent({strategyId, open, handleDia
   const handleCalculate = async () => {
     fetchCalculatedStrategy(strategyId, selectedIncomeId!)
       .then((response) => {
-        setRows(response.strategyConfigurationsCalculationSteps);
+        setStrategy(response);
         setDisplayCalculatedStrategy(true);
       })
       .catch((err) => {
@@ -112,14 +124,16 @@ export default function CalculatedStrategyComponent({strategyId, open, handleDia
       });
   };
 
-  const totalContributionAmount = rows.reduce(
-    (sum, row) => sum + (row.monthlyActualContributionAmount || 0),
-    0
-  );
-  const totalContributionPercentage = rows.reduce(
-    (sum, row) => sum + (row.monthlyActualContributionPercentage || 0),
-    0
-  );
+  const totalContributionAmount =
+    strategy?.strategyConfigurationsCalculationSteps.reduce(
+      (sum, row) => sum + (row.monthlyActualContributionAmount || 0),
+      0
+    );
+  const totalContributionPercentage =
+    strategy?.strategyConfigurationsCalculationSteps.reduce(
+      (sum, row) => sum + (row.monthlyActualContributionPercentage || 0),
+      0
+    );
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -146,73 +160,91 @@ export default function CalculatedStrategyComponent({strategyId, open, handleDia
           </Toolbar>
         </AppBar>
         <DialogContent>
-          <Stack direction={"row"}>
-            <FormControl>
-              <InputLabel id="income-select-label">Income</InputLabel>
-              <Select
-                labelId="income-select-label"
-                id="income-select"
-                value={selectedIncomeId}
-                label="Income"
-                onChange={(e) => setSelectedIncomeId(e.target.value as number)}
+          <Stack direction={"column"} spacing={2}>
+            <Stack direction={"row"} spacing={2}>
+              <FormControl>
+                <InputLabel id="income-select-label">Income</InputLabel>
+                <Select
+                  labelId="income-select-label"
+                  id="income-select"
+                  value={selectedIncomeId}
+                  label="Income"
+                  onChange={(e) =>
+                    setSelectedIncomeId(e.target.value as number)
+                  }
+                >
+                  {incomesResponse?.incomes.map((income) => (
+                    <MenuItem key={income.id} value={income.id}>
+                      {income.name} -{" "}
+                      {new Date(income.date).toLocaleDateString("cs-CZ", {
+                        month: "long",
+                      })}{" "}
+                      -{" "}
+                      {income.amount.toLocaleString("cs-CZ", {
+                        style: "currency",
+                        currency: "CZK",
+                      })}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button
+                onClick={() => handleCalculate()}
+                sx={[
+                  (theme) => ({
+                    color: theme.palette.text.primary,
+                    backgroundColor: theme.palette.secondary.main,
+                  }),
+                ]}
               >
-                {incomesResponse?.incomes.map((income) => (
-                  <MenuItem key={income.id} value={income.id}>
-                    {income.name} -{" "}
-                    {new Date(income.date).toLocaleDateString("cs-CZ", {
-                      month: "long",
-                    })}{" "}
-                    -{" "}
-                    {income.amount.toLocaleString("cs-CZ", {
+                Calculate
+              </Button>
+            </Stack>
+            {displayCalculatedStrategy && (
+              <>
+                <DataGrid
+                  rows={strategy?.strategyConfigurationsCalculationSteps}
+                  columns={columns}
+                  disableRowSelectionOnClick={false}
+                  hideFooter={true}
+                  getRowClassName={getCalculationStepRowClassName}
+                  sx={sx}
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    background: "#f5f5f5",
+                    padding: "8px",
+                    marginTop: "4px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <span style={{ minWidth: 150, textAlign: "right" }}>
+                    Total Contribution (CZK):{" "}
+                    {totalContributionAmount!.toLocaleString("cs-CZ", {
                       style: "currency",
                       currency: "CZK",
+                      minimumFractionDigits: 0,
                     })}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <Button onClick={() => handleCalculate()}>Calculate</Button>
+                  </span>
+                  <span
+                    style={{
+                      minWidth: 180,
+                      textAlign: "right",
+                      marginLeft: 32,
+                    }}
+                  >
+                    Total Contribution (%):{" "}
+                    {totalContributionPercentage!.toLocaleString("cs-CZ", {
+                      style: "percent",
+                      minimumFractionDigits: 0,
+                    })}
+                  </span>
+                </div>
+              </>
+            )}
           </Stack>
-          {displayCalculatedStrategy && (
-            <>
-              <DataGrid
-                rows={rows}
-                columns={columns}
-                disableRowSelectionOnClick={false}
-                hideFooter={true}
-                getRowClassName={getCalculationStepRowClassName}
-                sx={sx}
-              />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  background: "#f5f5f5",
-                  padding: "8px",
-                  marginTop: "4px",
-                  fontWeight: "bold",
-                }}
-              >
-                <span style={{ minWidth: 150, textAlign: "right" }}>
-                  Total Contribution (CZK):{" "}
-                  {totalContributionAmount.toLocaleString("cs-CZ", {
-                    style: "currency",
-                    currency: "CZK",
-                    minimumFractionDigits: 0,
-                  })}
-                </span>
-                <span
-                  style={{ minWidth: 180, textAlign: "right", marginLeft: 32 }}
-                >
-                  Total Contribution (%):{" "}
-                  {totalContributionPercentage.toLocaleString("cs-CZ", {
-                    style: "percent",
-                    minimumFractionDigits: 0,
-                  })}
-                </span>
-              </div>
-            </>
-          )}
         </DialogContent>
         <DialogActions>
           <Button

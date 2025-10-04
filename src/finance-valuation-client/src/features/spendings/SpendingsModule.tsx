@@ -1,4 +1,11 @@
-import { Button, Divider, Grid, Typography } from "@mui/material";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import SavingsIcon from "@mui/icons-material/Savings";
 import { SpendingsDto, SpendingsFrequency } from "./spendingsModel";
@@ -18,6 +25,7 @@ import {
   fetchEntries,
 } from "../../shared/crudApi";
 import { SpendingsCardModule } from "./SpendingsCardModule";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 export const SpendingsModule = (
   { enableEditing }: { enableEditing: boolean } = { enableEditing: false }
@@ -72,156 +80,183 @@ export const SpendingsModule = (
 
   return (
     <>
-      <Typography
-        variant="h6"
-        component="h6"
-        sx={[(theme) => ({ color: theme.palette.text.primary })]}
-      >
-        Monthly
-      </Typography>
-      <Divider sx={[(theme) => ({ color: theme.palette.text.primary })]} />
-      <Grid container spacing={2}>
-        {spendings
-          .filter((spending) => spending.frequency === "Monthly")
-          .sort((a, b) =>
-            a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
-          )
-          .map((spending) => (
-            <Grid
-              key={`Spending-${spending.id}`}
-              size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
-            >
-              <SpendingsCardModule
-                entryDto={spending}
-                handleCreateOrUpdate={handleCreateOrUpdate}
-                handleDelete={handleDelete}
-                color={spendingMonthlyColor}
-                textColor={spendingMonthlyTextColor}
-                icon={<SavingsIcon />}
-                enableEditing={enableEditing}
-              />
-            </Grid>
-          ))}
-        <Grid
-          textAlign={"left"}
-          alignContent={"start"}
-          size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}
+      <Accordion defaultExpanded sx={{boxShadow: 'none'}}>
+        <AccordionSummary
+          expandIcon={<ArrowDownwardIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
         >
-          <Button
-            size="large"
-            style={{
-              backgroundColor: spendingMonthlyColor,
-              color: spendingMonthlyTextColor,
-            }}
-            onClick={() =>
-              handleCreateEmptySpending("Monthly" as SpendingsFrequency)
-            }
+          <Typography
+            variant="h6"
+            component="h6"
+            sx={[(theme) => ({ color: theme.palette.text.primary })]}
           >
-            <AddIcon />
-          </Button>
-        </Grid>
-      </Grid>
-
-      <Typography
-        variant="h6"
-        component="h6"
-        sx={[(theme) => ({ color: theme.palette.text.primary })]}
-      >
-        Quaterly
-      </Typography>
-      <Divider sx={[(theme) => ({ color: theme.palette.text.primary })]} />
-      <Grid container spacing={2}>
-        {spendings
-          .filter((spending) => spending.frequency === "Quaterly")
-          .sort((a, b) =>
-            a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
-          )
-          .map((spending) => (
+            Monthly
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={2}>
+            {spendings
+              .filter((spending) => spending.frequency === "Monthly")
+              .sort((a, b) =>
+                a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
+              )
+              .map((spending) => (
+                <Grid
+                  key={`Spending-${spending.id}`}
+                  size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
+                >
+                  <SpendingsCardModule
+                    entryDto={spending}
+                    handleCreateOrUpdate={handleCreateOrUpdate}
+                    handleDelete={handleDelete}
+                    color={spendingMonthlyColor}
+                    textColor={spendingMonthlyTextColor}
+                    icon={<SavingsIcon />}
+                    enableEditing={enableEditing}
+                  />
+                </Grid>
+              ))}
             <Grid
-              key={`Spending-${spending.id}`}
+              textAlign={"left"}
+              alignContent={"start"}
+              size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}
+            >
+              <Button
+                size="large"
+                style={{
+                  backgroundColor: spendingMonthlyColor,
+                  color: spendingMonthlyTextColor,
+                }}
+                onClick={() =>
+                  handleCreateEmptySpending("Monthly" as SpendingsFrequency)
+                }
+              >
+                <AddIcon />
+              </Button>
+            </Grid>
+          </Grid>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion defaultExpanded sx={{boxShadow: 'none'}}>
+        <AccordionSummary
+          expandIcon={<ArrowDownwardIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Typography
+            variant="h6"
+            component="h6"
+            textAlign={"center"}
+            sx={[(theme) => ({ color: theme.palette.text.primary })]}
+          >
+            Quaterly
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={2}>
+            {spendings
+              .filter((spending) => spending.frequency === "Quaterly")
+              .sort((a, b) =>
+                a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
+              )
+              .map((spending) => (
+                <Grid
+                  key={`Spending-${spending.id}`}
+                  size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}
+                >
+                  <SpendingsCardModule
+                    entryDto={spending}
+                    handleCreateOrUpdate={handleCreateOrUpdate}
+                    handleDelete={handleDelete}
+                    color={spendingQuarterlyColor}
+                    textColor={spendingQuarterlyTextColor}
+                    icon={<SavingsIcon />}
+                    enableEditing={enableEditing}
+                  />
+                </Grid>
+              ))}
+            <Grid
+              textAlign={"left"}
+              alignContent={"start"}
               size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}
             >
-              <SpendingsCardModule
-                entryDto={spending}
-                handleCreateOrUpdate={handleCreateOrUpdate}
-                handleDelete={handleDelete}
-                color={spendingQuarterlyColor}
-                textColor={spendingQuarterlyTextColor}
-                icon={<SavingsIcon />}
-                enableEditing={enableEditing}
-              />
+              <Button
+                size="large"
+                style={{
+                  backgroundColor: spendingQuarterlyColor,
+                  color: spendingQuarterlyTextColor,
+                }}
+                onClick={() =>
+                  handleCreateEmptySpending("Quaterly" as SpendingsFrequency)
+                }
+              >
+                <AddIcon />
+              </Button>
             </Grid>
-          ))}
-        <Grid
-          textAlign={"left"}
-          alignContent={"start"}
-          size={{ xs: 12, sm: 6, md: 4, lg: 4, xl: 4 }}
-        >
-          <Button
-            size="large"
-            style={{
-              backgroundColor: spendingQuarterlyColor,
-              color: spendingQuarterlyTextColor,
-            }}
-            onClick={() =>
-              handleCreateEmptySpending("Quaterly" as SpendingsFrequency)
-            }
-          >
-            <AddIcon />
-          </Button>
-        </Grid>
-      </Grid>
-      <Typography
-        variant="h6"
-        component="h6"
-        sx={[(theme) => ({ color: theme.palette.text.primary })]}
-      >
-        Yearly
-      </Typography>
-      <Divider sx={[(theme) => ({ color: theme.palette.text.primary })]} />
-      <Grid container spacing={2}>
-        {spendings
-          .filter((spending) => spending.frequency === "Yearly")
-          .sort((a, b) =>
-            a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
-          )
-          .map((spending) => (
-            <Grid
-              key={`Spending-${spending.id}`}
-              size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
-            >
-              <SpendingsCardModule
-                entryDto={spending}
-                handleCreateOrUpdate={handleCreateOrUpdate}
-                handleDelete={handleDelete}
-                color={spendingYearlyColor}
-                textColor={spendingYearlyTextColor}
-                icon={<SavingsIcon />}
-                enableEditing={enableEditing}
-              />
-            </Grid>
-          ))}
-        {enableEditing && (
-          <Grid
-            textAlign={"left"}
-            alignContent={"start"}
-            size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}
-          >
-            <Button
-              size="large"
-              style={{
-                backgroundColor: spendingYearlyColor,
-                color: spendingYearlyTextColor,
-              }}
-              onClick={() =>
-                handleCreateEmptySpending("Yearly" as SpendingsFrequency)
-              }
-            >
-              <AddIcon />
-            </Button>
           </Grid>
-        )}
-      </Grid>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion defaultExpanded sx={{boxShadow: 'none'}}>
+        <AccordionSummary
+          expandIcon={<ArrowDownwardIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Typography
+            variant="h6"
+            component="h6"
+            sx={[(theme) => ({ color: theme.palette.text.primary })]}
+          >
+            Yearly
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={2}>
+            {spendings
+              .filter((spending) => spending.frequency === "Yearly")
+              .sort((a, b) =>
+                a.isMandatory === b.isMandatory ? 0 : a.isMandatory ? -1 : 1
+              )
+              .map((spending) => (
+                <Grid
+                  key={`Spending-${spending.id}`}
+                  size={{ xs: 12, sm: 6, md: 3, lg: 3, xl: 3 }}
+                >
+                  <SpendingsCardModule
+                    entryDto={spending}
+                    handleCreateOrUpdate={handleCreateOrUpdate}
+                    handleDelete={handleDelete}
+                    color={spendingYearlyColor}
+                    textColor={spendingYearlyTextColor}
+                    icon={<SavingsIcon />}
+                    enableEditing={enableEditing}
+                  />
+                </Grid>
+              ))}
+            {enableEditing && (
+              <Grid
+                textAlign={"left"}
+                alignContent={"start"}
+                size={{ xs: 6, sm: 6, md: 4, lg: 4, xl: 4 }}
+              >
+                <Button
+                  size="large"
+                  style={{
+                    backgroundColor: spendingYearlyColor,
+                    color: spendingYearlyTextColor,
+                  }}
+                  onClick={() =>
+                    handleCreateEmptySpending("Yearly" as SpendingsFrequency)
+                  }
+                >
+                  <AddIcon />
+                </Button>
+              </Grid>
+            )}
+          </Grid>
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 };

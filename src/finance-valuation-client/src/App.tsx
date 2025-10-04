@@ -11,6 +11,7 @@ import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import BedtimeIcon from "@mui/icons-material/Bedtime";
 import SunnyIcon from "@mui/icons-material/Sunny";
 import {
+  alpha,
   Avatar,
   Box,
   CircularProgress,
@@ -61,11 +62,21 @@ function App() {
       });
   }, []);
 
+  const routes = [
+    { name: "dashboard", icon: <HomeIcon /> },
+    { name: "debts", icon: <AccountBalanceIcon /> },
+    { name: "savings", icon: <SavingsIcon /> },
+    { name: "incomes", icon: <AccountBalanceWalletIcon /> },
+    { name: "investments", icon: <TrendingUpIcon /> },
+    { name: "spendings", icon: <TrendingDownIcon /> },
+    { name: "strategies", icon: <AccountTreeIcon /> },
+  ];
+
   if (error) return <div>Error: {error}</div>;
 
   return (
     <>
-      {loading &&
+      {loading && (
         <Box
           sx={[
             (theme) => ({
@@ -92,7 +103,7 @@ function App() {
             />
           </Grid>
         </Box>
-      }
+      )}
       {!loading && (
         <Box
           sx={{
@@ -106,8 +117,17 @@ function App() {
         >
           <Stack width={"100%"} padding={5} spacing={1}>
             <Grid container>
-              <Grid size={1} textAlign={'center'} alignContent={'center'} alignItems={'center'}>
-                <Avatar alt="Logo" src="/logo.png" style={{paddingLeft: 15}}/>
+              <Grid
+                size={1}
+                textAlign={"center"}
+                alignContent={"center"}
+                alignItems={"center"}
+              >
+                <Avatar
+                  alt="Logo"
+                  src="/logo.png"
+                  style={{ paddingLeft: 15 }}
+                />
               </Grid>
               <Grid size={11}>
                 <Stack
@@ -159,72 +179,27 @@ function App() {
                     (theme) => ({
                       color: theme.palette.text.primary,
                     }),
+                    (theme) => ({
+                      "&  .MuiListItemButton-root.Mui-selected": {
+                        backgroundColor: alpha(theme.palette.text.primary, 0.1),
+                      },
+                      "& .MuiListItemButton-root:hover": {
+                        backgroundColor: alpha(theme.palette.text.primary, 0.1),
+                      },
+                    }),
                   ]}
                 >
-                  <ListItem disablePadding>
-                    <ListItemButton
-                      onClick={() => setSelectedPage("dashboard")}
-                    >
-                      <ListItemIcon>
-                        <HomeIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={t("dashboard")} />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem disablePadding>
-                    <ListItemButton onClick={() => setSelectedPage("debts")}>
-                      <ListItemIcon>
-                        <AccountBalanceIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={t("debts")} />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem disablePadding>
-                    <ListItemButton onClick={() => setSelectedPage("savings")}>
-                      <ListItemIcon>
-                        <SavingsIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={t("savings")} />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem disablePadding>
-                    <ListItemButton onClick={() => setSelectedPage("incomes")}>
-                      <ListItemIcon>
-                        <AccountBalanceWalletIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={t("incomes")} />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem disablePadding>
-                    <ListItemButton
-                      onClick={() => setSelectedPage("investments")}
-                    >
-                      <ListItemIcon>
-                        <TrendingUpIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={t("investments")} />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem disablePadding>
-                    <ListItemButton
-                      onClick={() => setSelectedPage("spendings")}
-                    >
-                      <ListItemIcon>
-                        <TrendingDownIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={t("spendings")} />
-                    </ListItemButton>
-                  </ListItem>
-                  <ListItem disablePadding>
-                    <ListItemButton
-                      onClick={() => setSelectedPage("strategies")}
-                    >
-                      <ListItemIcon>
-                        <AccountTreeIcon />
-                      </ListItemIcon>
-                      <ListItemText primary={t("strategies")} />
-                    </ListItemButton>
-                  </ListItem>
+                  {routes.map((route) => (
+                    <ListItem disablePadding>
+                      <ListItemButton
+                        selected={selectedPage === route.name}
+                        onClick={() => setSelectedPage(route.name)}
+                      >
+                        <ListItemIcon>{route.icon}</ListItemIcon>
+                        <ListItemText primary={t(route.name)} />
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
                 </List>
               </Grid>
               <Grid
