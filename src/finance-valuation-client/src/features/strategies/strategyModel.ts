@@ -13,6 +13,7 @@ export interface StrategyDto {
 
 export interface StrategyConfigurationDto {
   id: number;
+  accountName: string;
   name: string;
   type: StrategyConfigurationType;
   referenceId: number;

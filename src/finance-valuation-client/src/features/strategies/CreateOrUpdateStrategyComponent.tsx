@@ -184,6 +184,14 @@ export default function CreateOrUpdateStrategyComponent({
       flex: 1,
     },
     {
+      field: "accountName",
+      headerName: "Account Name",
+      width: 150,
+      editable: true,
+      sortable: false,
+      flex: 1,
+    },
+    {
       field: "referenceId",
       flex: 1,
 

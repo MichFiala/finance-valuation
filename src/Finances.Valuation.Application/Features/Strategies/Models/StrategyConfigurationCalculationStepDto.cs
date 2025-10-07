@@ -5,7 +5,10 @@ namespace Finances.Valuation.Application.Features.Strategies.Models;
 public class StrategyConfigurationCalculationStepDto
 {
     public int Id { get; set; }
+    
     public required string Name { get; set; }
+
+    public string? AccountName { get; set; }
     
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public StrategyConfigurationType Type { get; set; }

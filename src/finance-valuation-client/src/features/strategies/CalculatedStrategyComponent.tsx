@@ -20,6 +20,7 @@ import {
 import {
   CalculatedStrategyResponseDto,
   CalculationStepConfigurationDto,
+  StrategyConfigurationCalculationByAccountDto,
 } from "./strategyCalculatedModel";
 import { getCalculationStepRowClassName, sx } from "./rowStyleSettings";
 import CloseIcon from "@mui/icons-material/Close";
@@ -80,6 +81,47 @@ const columns: GridColDef<CalculationStepConfigurationDto>[] = [
   },
 ];
 
+const accountColumns: GridColDef<StrategyConfigurationCalculationByAccountDto>[] =
+  [
+    {
+      field: "accountName",
+      headerName: "Account Name",
+      width: 150,
+      editable: false,
+      sortable: false,
+      flex: 1,
+    },
+    {
+      field: "totalMonthlyActualContributionAmount",
+      headerName: "Monthly Contribution (CZK)",
+      type: "number",
+      width: 180,
+      editable: false,
+      sortable: false,
+      valueFormatter: (value: number) =>
+        value?.toLocaleString("cs-CZ", {
+          style: "currency",
+          currency: "CZK",
+          minimumFractionDigits: 0,
+        }),
+      flex: 1,
+    },
+    {
+      field: "totalMonthlyActualContributionPercentage",
+      headerName: "Monthly Contribution (%)",
+      type: "number",
+      width: 180,
+      editable: false,
+      sortable: false,
+      valueFormatter: (value: number) =>
+        value?.toLocaleString("cs-CZ", {
+          style: "percent",
+          minimumFractionDigits: 0,
+        }),
+      flex: 1,
+    },
+  ];
+
 export default function CalculatedStrategyComponent({
   strategyId,
   open,
@@ -116,6 +158,13 @@ export default function CalculatedStrategyComponent({
   const handleCalculate = async () => {
     fetchCalculatedStrategy(strategyId, selectedIncomeId!)
       .then((response) => {
+        response.strategyConfigurationsCalculationByAccounts =
+          response.strategyConfigurationsCalculationByAccounts.map(
+            (account) => ({
+              ...account,
+              id: account.accountName,
+            })
+          );
         setStrategy(response);
         setDisplayCalculatedStrategy(true);
       })
@@ -210,6 +259,16 @@ export default function CalculatedStrategyComponent({
                   getRowClassName={getCalculationStepRowClassName}
                   sx={sx}
                 />
+                {strategy?.strategyConfigurationsCalculationByAccounts.length! >
+                  0 && (
+                  <DataGrid
+                    rows={strategy?.strategyConfigurationsCalculationByAccounts}
+                    columns={accountColumns}
+                    disableRowSelectionOnClick={false}
+                    hideFooter={true}
+                    sx={sx}
+                  />
+                )}
                 <div
                   style={{
                     display: "flex",

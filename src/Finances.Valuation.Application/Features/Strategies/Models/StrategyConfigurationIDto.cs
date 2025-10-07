@@ -4,7 +4,10 @@ namespace Finances.Valuation.Application.Features.Strategies.Models;
 public class StrategyConfigurationDto
 {
     public required int Id { get; set; }
+
     public string Name { get; set; } = string.Empty;
+
+    public string? AccountName { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public StrategyConfigurationType Type { get; set; }
@@ -38,6 +41,7 @@ public class StrategyConfigurationDto
         {
             Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Debt.Name,
+            AccountName = strategyConfiguration.AccountName,
             Type = StrategyConfigurationType.Debt,
             MonthlyContributionAmount = strategyConfiguration.MonthlyContributionAmount ?? strategyConfiguration.Debt.Payment,
             ReferenceId = strategyConfiguration.DebtId ?? 0
@@ -55,6 +59,7 @@ public class StrategyConfigurationDto
         {
             Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Investment.Name,
+            AccountName = strategyConfiguration.AccountName,
             Type = StrategyConfigurationType.Investment,
             MonthlyContributionAmount = strategyConfiguration.MonthlyContributionAmount,
             MonthlyContributionPercentage = strategyConfiguration.MonthlyContributionPercentage,
@@ -73,6 +78,7 @@ public class StrategyConfigurationDto
         {
             Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Saving.Name,
+            AccountName = strategyConfiguration.AccountName,
             Type = StrategyConfigurationType.Saving,
             MonthlyContributionAmount = strategyConfiguration.MonthlyContributionAmount ?? strategyConfiguration.Saving.ExpectedMonthlyContributionAmount,
             MonthlyContributionPercentage = strategyConfiguration.MonthlyContributionPercentage,
@@ -91,6 +97,7 @@ public class StrategyConfigurationDto
         {
             Id = strategyConfiguration.Id,
             Name = strategyConfiguration.Spending.Name,
+            AccountName = strategyConfiguration.AccountName,
             Type = StrategyConfigurationType.Spending,
             MonthlyContributionAmount = strategyConfiguration.Spending.Amount,
             ReferenceId = strategyConfiguration.SpendingId ?? 0

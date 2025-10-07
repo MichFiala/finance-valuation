@@ -15,10 +15,10 @@ internal static class StrategyConfigurationsCalculationService
             StrategyConfigurationDto configuration = strategyConfigurations[configurationIndex];
 
             decimal? contributionAmount = configuration.MonthlyContributionAmount;
-            
+
             if (configuration.MonthlyContributionAmount is null)
                 contributionAmount = configuration.MonthlyContributionPercentage is not null ? income.Amount * configuration.MonthlyContributionPercentage : availableAmount;
-            
+
             if (contributionAmount > availableAmount)
                 contributionAmount = availableAmount;
 
@@ -26,6 +26,7 @@ internal static class StrategyConfigurationsCalculationService
             {
                 Id = configuration.Id,
                 Name = configuration.Name,
+                AccountName = configuration.AccountName,
                 Type = configuration.Type,
                 AvailableAmount = availableAmount,
                 MonthlyExpectedContributionAmount = configuration.MonthlyContributionAmount,
@@ -38,5 +39,21 @@ internal static class StrategyConfigurationsCalculationService
 
             configurationIndex++;
         }
+    }
+
+    public static IEnumerable<StrategyConfigurationCalculationByAccountDto> GroupByAccountName(IEnumerable<StrategyConfigurationCalculationStepDto> steps)
+    {
+        var grouped = steps.GroupBy(s => s.AccountName)
+            .Select(g => new StrategyConfigurationCalculationByAccountDto
+            {
+                AccountName = g.Key ?? string.Empty,
+                TotalMonthlyActualContributionAmount = g.Sum(s => s.MonthlyActualContributionAmount),
+                TotalMonthlyActualContributionPercentage = g.Sum(s => s.MonthlyActualContributionPercentage)
+            });
+
+        if(grouped.Count() == 1 && string.IsNullOrEmpty(grouped.First().AccountName))
+            return [];
+        
+        return grouped;
     }
 }

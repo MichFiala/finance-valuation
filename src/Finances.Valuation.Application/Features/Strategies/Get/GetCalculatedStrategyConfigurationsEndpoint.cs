@@ -44,11 +44,14 @@ internal class GetCalculatedStrategyConfigurationsEndpoint(UserManager<User.Mode
         IReadOnlyList<StrategyConfigurationDto> strategyConfigurationsDtos = strategyConfigurations.Select(StrategyConfigurationDto.Create).ToList();
 
         IEnumerable<StrategyConfigurationCalculationStepDto> calculatedConfigurations = StrategyConfigurationsCalculationService.Calculate(strategyConfigurationsDtos, income);
-        
+
+        IEnumerable<StrategyConfigurationCalculationByAccountDto> groupedByAccount = StrategyConfigurationsCalculationService.GroupByAccountName(calculatedConfigurations);
+
         await Send.OkAsync(new GetCalculatedStrategyConfigurationsResponse
         {
             Name = strategy.Name,
-            StrategyConfigurationsCalculationSteps = calculatedConfigurations.ToList()
+            StrategyConfigurationsCalculationSteps = calculatedConfigurations.ToList(),
+            StrategyConfigurationsCalculationByAccounts = groupedByAccount.ToList()
         }, ct);
     }
 }

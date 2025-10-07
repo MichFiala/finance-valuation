@@ -3,6 +3,7 @@ import { StrategyConfigurationType } from "./strategyModel";
 export interface CalculatedStrategyResponseDto {
   name: string;
   strategyConfigurationsCalculationSteps: CalculationStepConfigurationDto[];
+  strategyConfigurationsCalculationByAccounts: StrategyConfigurationCalculationByAccountDto[];
 }
 
 export interface CalculationStepConfigurationDto {
@@ -14,4 +15,11 @@ export interface CalculationStepConfigurationDto {
   monthlyExpectedContributionPercentage: number;
   monthlyActualContributionAmount: number;
   monthlyActualContributionPercentage: number;
+}
+
+export interface StrategyConfigurationCalculationByAccountDto {
+  id: string;
+  accountName: string;
+  totalMonthlyActualContributionAmount?: number;
+  totalMonthlyActualContributionPercentage?: number;
 }

@@ -8,6 +8,8 @@ internal class StrategyConfiguration : IUserRelated
 
     public int StrategyId { get; set; }
 
+    public string? AccountName { get; set; }
+
     public int? DebtId { get; set; }
     public Debts.Models.Debt? Debt { get; set; }
 
@@ -43,6 +45,7 @@ internal class StrategyConfiguration : IUserRelated
 
     public static StrategyConfiguration Create(
         int strategyId,
+        string? accountName,
         StrategyConfigurationType type,
         int referenceId,
         int priority,
@@ -53,6 +56,7 @@ internal class StrategyConfiguration : IUserRelated
         StrategyConfiguration strategyConfiguration = new()
         {
             StrategyId = strategyId,
+            AccountName = accountName,
             Type = type,
             Priority = priority,
             MonthlyContributionAmount = monthlyContributionAmount,
@@ -69,8 +73,8 @@ internal class StrategyConfiguration : IUserRelated
     }
 
     public static StrategyConfiguration Create(Strategy strategy, StrategyConfigurationDto itemDto, int priority) =>
-        Create(strategy.Id, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage, strategy.UserId);
+        Create(strategy.Id, itemDto.AccountName, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage, strategy.UserId);
         
     public static StrategyConfiguration Create(int strategyId, string userId, StrategyConfigurationDto itemDto, int priority) =>
-        Create(strategyId, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage, userId);
+        Create(strategyId, itemDto.AccountName, itemDto.Type, itemDto.ReferenceId, priority, itemDto.MonthlyContributionAmount, itemDto.MonthlyContributionPercentage, userId);
 }
