@@ -22,6 +22,6 @@ public class StrategyConfigurationCalculationStepDto
     public decimal MonthlyActualContributionAmount { get; set; }
 
     public decimal MonthlyActualContributionPercentage { get; set; }
-    
-    public int ReferenceId{ get; set; }
+
+    public int ReferenceId { get; set; }
 }

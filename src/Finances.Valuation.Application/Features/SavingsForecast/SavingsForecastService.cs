@@ -54,7 +54,7 @@ internal class SavingsForecastService(
 
             List<StrategyConfigurationCalculationStepDto> result = StrategyConfigurationsCalculationService.Calculate(configurations.Select(StrategyConfigurationDto.Create).ToList(), income).ToList();
 
-            var calculatedSaving = result.FirstOrDefault(r => r.ReferenceId == saving.Id);
+            var calculatedSaving = result.FirstOrDefault(r => r.ReferenceId == saving.Id && r.Type == StrategyConfigurationType.Saving);
 
             decimal contributedAmount = 0;
             if (calculatedSaving is not null)
