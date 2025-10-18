@@ -5,4 +5,6 @@ public class GetSavingsForecastResponse
     public int Months { get; set; }
 
     public DateOnly Date { get; set; }
+
+    public required List<SavingsForecastStepDto> ForecastSteps { get; set; }
 }

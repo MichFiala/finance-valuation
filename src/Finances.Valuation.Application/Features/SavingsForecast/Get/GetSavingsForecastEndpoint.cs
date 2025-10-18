@@ -24,12 +24,13 @@ internal class GetSavingsForecastEndpoint(UserManager<User.Models.User> userMana
     {
         User.Models.User? user = await userManager.FindByEmailAsync(HttpContext.Email()) ?? throw new AuthenticationException($"User not found by email {HttpContext.Email()}");
 
-        int forecastedMonths = await savingsForecastService.CalculateForecastAsync(user.Id, request.SavingId, request.MainIncomeStrategyId, request.SideIncomeStrategyId);
+        (int forecastedMonths, List<SavingsForecastStepDto> forecastSteps) = await savingsForecastService.CalculateForecastAsync(user.Id, request.SavingId, request.MainIncomeStrategyId, request.SideIncomeStrategyId);
 
         await Send.OkAsync(new GetSavingsForecastResponse
         {
             Months = forecastedMonths,
             Date = DateOnly.FromDateTime(DateTime.Now.AddMonths(forecastedMonths)),
+            ForecastSteps = forecastSteps
         }, ct);
     }
 }

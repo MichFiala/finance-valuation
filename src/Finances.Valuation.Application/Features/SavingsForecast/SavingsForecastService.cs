@@ -4,6 +4,7 @@ using Finances.Valuation.Application.Features.Incomes.Models;
 using Finances.Valuation.Application.Features.Investments;
 using Finances.Valuation.Application.Features.Savings;
 using Finances.Valuation.Application.Features.Savings.Models;
+using Finances.Valuation.Application.Features.SavingsForecast.Get.Models;
 using Finances.Valuation.Application.Features.Spendings;
 using Finances.Valuation.Application.Features.Strategies;
 using Finances.Valuation.Application.Features.Strategies.Models;
@@ -16,7 +17,7 @@ internal class SavingsForecastService(
     StrategyRepository strategyRepository)
 {
     const int MaxMonths = 600; // 50 years
-    public async Task<int> CalculateForecastAsync(
+    public async Task<(int, List<SavingsForecastStepDto>)> CalculateForecastAsync(
         string userId, int savingId, int mainIncomeStrategyId, int sideIncomeStrategyId)
     {
         Saving? saving = await savingRepository.GetAsync(savingId, userId) ?? throw new KeyNotFoundException("Saving not found");
@@ -40,6 +41,8 @@ internal class SavingsForecastService(
         decimal targetAmount = saving.TargetAmount.Value;
         decimal currentAmount = saving.Amount;
 
+        List<SavingsForecastStepDto> forecastSteps = new();
+
         int months = 0;
         DateOnly actualDate = incomes.First().Date;
         foreach (var income in incomes)
@@ -53,19 +56,30 @@ internal class SavingsForecastService(
 
             var calculatedSaving = result.FirstOrDefault(r => r.ReferenceId == saving.Id);
 
+            decimal contributedAmount = 0;
             if (calculatedSaving is not null)
-                currentAmount += calculatedSaving.MonthlyActualContributionAmount;
+                contributedAmount = calculatedSaving.MonthlyActualContributionAmount;
+
+            currentAmount += contributedAmount;
 
             if (income.Date > actualDate)
             {
                 months++;
                 actualDate = income.Date;
             }
+
+            forecastSteps.Add(new SavingsForecastStepDto
+            {
+                IncomeDto = IncomeDto.Create(income),
+                CurrentAmount = currentAmount,
+                TargetAmountDifference = targetAmount - currentAmount,
+                ContributedAmount = contributedAmount
+            });
         }
 
         if (currentAmount < targetAmount)
-            return MaxMonths;
+            return (MaxMonths, forecastSteps);
 
-        return months;
+        return (months, forecastSteps);
     }
 }
