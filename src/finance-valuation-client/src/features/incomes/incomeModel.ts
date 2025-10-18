@@ -3,6 +3,7 @@ export interface IncomeDto{
     name: string;
     amount: number;
     date: Date;
+    isMainIncome: boolean;
 }
 
 export interface IncomesResponseDto {

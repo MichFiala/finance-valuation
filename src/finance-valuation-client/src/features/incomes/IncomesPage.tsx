@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { IncomeDto } from "./incomeModel";
 import {
-  createIncome,
   deleteIncome,
   fetchIncomes,
-  updateIncome,
+  IncomesEndpoint,
+  toUtcDateOnlyString,
 } from "./incomesApi";
 import {
   DataGrid,
@@ -15,6 +15,7 @@ import {
 import { Button, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { create, update } from "../../shared/crudApi";
 
 export default function IncomesPage() {
   const [incomes, setIncomes] = useState<IncomeDto[]>([]);
@@ -61,6 +62,13 @@ export default function IncomesPage() {
       flex: 1,
     },
     {
+      field: "isMainIncome",
+      headerName: "Is Main Income",
+      type: "boolean",
+      editable: true,
+      width: 150,
+    },
+    {
       field: "actions",
       type: "actions",
       headerName: "Actions",
@@ -88,21 +96,33 @@ export default function IncomesPage() {
     oldRow: IncomeDto
   ) => {
     if (newRow.id < 0) {
-      await createIncome(newRow.name, newRow.amount, newRow.date);
+      await create(IncomesEndpoint, {
+        name: newRow.name,
+        amount: newRow.amount,
+        date: toUtcDateOnlyString(newRow.date),
+        isMainIncome: newRow.isMainIncome,
+      });
     } else {
-      await updateIncome(newRow.id, newRow.name, newRow.amount, newRow.date);
+      await update(IncomesEndpoint, newRow.id, {
+        name: newRow.name,
+        amount: newRow.amount,
+        date: toUtcDateOnlyString(newRow.date),
+        isMainIncome: newRow.isMainIncome,
+      });
     }
     setReloadCounter(reloadCounter + 1);
     return newRow;
   };
 
   const handleCreateEmptyIncome = () => {
-    const minId = incomes.length > 0 ? Math.min(...incomes.map((income) => income.id)) : 0;
+    const minId =
+      incomes.length > 0 ? Math.min(...incomes.map((income) => income.id)) : 0;
     const emptyIncome = {
       id: minId > 0 ? -1 : minId - 1,
       name: "New Income",
       amount: 0,
       date: new Date(),
+      isMainIncome: true,
     } as IncomeDto;
 
     setIncomes([...incomes, emptyIncome]);

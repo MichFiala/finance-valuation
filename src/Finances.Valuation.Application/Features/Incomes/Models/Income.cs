@@ -16,6 +16,8 @@ internal class Income : IDatabaseEntry, IUserRelated
 
     public User.Models.User? User { get; set; }
 
+    public bool IsMainIncome { get; set; }
+
     internal static Income Create(IncomeDto incomeDto, string userId)
     {
         return new Income
@@ -24,6 +26,7 @@ internal class Income : IDatabaseEntry, IUserRelated
             Amount = incomeDto.Amount,
             Date = incomeDto.Date,
             UserId = userId,
+            IsMainIncome = incomeDto.IsMainIncome
         };
     }
 }

@@ -8,6 +8,7 @@ public class IncomeDto : IEntityDto
     public required string Name { get; set; }
     public decimal Amount { get; set; }
     public DateOnly Date { get; set; }
+    public bool IsMainIncome { get; set; }
 
     internal static IncomeDto Create(Income income)
     {
@@ -16,7 +17,8 @@ public class IncomeDto : IEntityDto
             Id = income.Id,
             Name = income.Name,
             Amount = income.Amount,
-            Date = income.Date
+            Date = income.Date,
+            IsMainIncome = income.IsMainIncome
         };
     }
 }

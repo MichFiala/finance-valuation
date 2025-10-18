@@ -25,6 +25,7 @@ internal class UpdateIncomeEndpoint(UpdateHandler updateHandler, IncomeRepositor
             income.Name = request.Name;
             income.Amount = request.Amount;
             income.Date = request.Date;
+            income.IsMainIncome = request.IsMainIncome;
         }, incomeRepository, HttpContext);
     }    
 }
