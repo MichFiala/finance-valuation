@@ -9,5 +9,4 @@ public class SavingsForecastStepDto
     public decimal CurrentAmount { get; set; }
     public decimal TargetAmountDifference { get; set; }
     public decimal ContributedAmount { get; set; }
-    public required List<StrategyConfigurationCalculationStepDto>? StrategyCalculationSteps { get; set; }
 }
