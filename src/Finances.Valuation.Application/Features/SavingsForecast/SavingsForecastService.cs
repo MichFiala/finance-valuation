@@ -73,7 +73,8 @@ internal class SavingsForecastService(
                 IncomeDto = IncomeDto.Create(income),
                 CurrentAmount = currentAmount,
                 TargetAmountDifference = targetAmount - currentAmount,
-                ContributedAmount = contributedAmount
+                ContributedAmount = contributedAmount,
+                StrategyCalculationSteps = result
             });
         }
 
