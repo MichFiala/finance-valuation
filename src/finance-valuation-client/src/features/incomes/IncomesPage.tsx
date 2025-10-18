@@ -29,7 +29,7 @@ export default function IncomesPage() {
         response.incomes.forEach(
           (income) => (income.date = new Date(income.date!))
         );
-        setIncomes(response.incomes);
+        setIncomes(response.incomes.sort((a, b) => b.date.getTime() - a.date.getTime()));
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -121,7 +121,7 @@ export default function IncomesPage() {
       id: minId > 0 ? -1 : minId - 1,
       name: "New Income",
       amount: 0,
-      date: new Date(),
+      date: incomes.length > 0 ? new Date(Math.max(...incomes.map((income) => income.date.getTime())) + 1) : new Date(),
       isMainIncome: true,
     } as IncomeDto;
 
