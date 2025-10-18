@@ -5,7 +5,8 @@ namespace Finances.Valuation.Application.Features.Strategies;
 
 internal static class StrategyConfigurationsCalculationService
 {
-    public static IEnumerable<StrategyConfigurationCalculationStepDto> Calculate(IReadOnlyList<StrategyConfigurationDto> strategyConfigurations, Income income)
+    public static IEnumerable<StrategyConfigurationCalculationStepDto> Calculate(
+        IReadOnlyList<StrategyConfigurationDto> strategyConfigurations, Income income)
     {
         decimal availableAmount = income.Amount;
 
@@ -32,7 +33,8 @@ internal static class StrategyConfigurationsCalculationService
                 MonthlyExpectedContributionAmount = configuration.MonthlyContributionAmount,
                 MonthlyExpectedContributionPercentage = configuration.MonthlyContributionPercentage,
                 MonthlyActualContributionAmount = contributionAmount!.Value,
-                MonthlyActualContributionPercentage = contributionAmount.Value / income.Amount
+                MonthlyActualContributionPercentage = contributionAmount.Value / income.Amount,
+                ReferenceId = configuration.ReferenceId
             };
 
             availableAmount -= contributionAmount!.Value;

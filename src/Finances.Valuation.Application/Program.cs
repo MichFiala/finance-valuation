@@ -5,6 +5,7 @@ using Finances.Valuation.Application.Features.Debts;
 using Finances.Valuation.Application.Features.Incomes;
 using Finances.Valuation.Application.Features.Investments;
 using Finances.Valuation.Application.Features.Savings;
+using Finances.Valuation.Application.Features.SavingsForecast;
 using Finances.Valuation.Application.Features.SavingsLongevity;
 using Finances.Valuation.Application.Features.Shared.Endpoints.Create;
 using Finances.Valuation.Application.Features.Shared.Endpoints.Delete;
@@ -90,6 +91,7 @@ builder.Services.AddTransient<StrategyRepository>();
 builder.Services.AddTransient<InvestmentRepository>();
 
 builder.Services.AddTransient<SavingsLongevityCalculationService>();
+builder.Services.AddTransient<SavingsForecastService>();
 
 var app = builder.Build();
 
