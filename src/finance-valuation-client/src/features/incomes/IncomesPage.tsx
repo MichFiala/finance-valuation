@@ -29,7 +29,7 @@ export default function IncomesPage() {
         response.incomes.forEach(
           (income) => (income.date = new Date(income.date!))
         );
-        setIncomes(response.incomes.sort((a, b) => b.date.getTime() - a.date.getTime()));
+        setIncomes(response.incomes.sort((a, b) => a.date.getTime() - b.date.getTime()));
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
