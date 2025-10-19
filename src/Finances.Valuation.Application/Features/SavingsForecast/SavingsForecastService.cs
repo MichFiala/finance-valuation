@@ -17,7 +17,7 @@ internal class SavingsForecastService(
     StrategyRepository strategyRepository)
 {
     const int MaxMonths = 600; // 50 years
-    public async Task<(int, List<SavingsForecastStepDto>)> CalculateForecastAsync(
+    public async Task<(DateOnly, List<SavingsForecastStepDto>)> CalculateForecastAsync(
         string userId, int savingId, int mainIncomeStrategyId, int sideIncomeStrategyId)
     {
         Saving? saving = await savingRepository.GetAsync(savingId, userId) ?? throw new KeyNotFoundException("Saving not found");
@@ -43,7 +43,6 @@ internal class SavingsForecastService(
 
         List<SavingsForecastStepDto> forecastSteps = new();
 
-        int months = 0;
         DateOnly actualDate = incomes.First().Date;
         foreach (var income in incomes)
         {
@@ -64,7 +63,6 @@ internal class SavingsForecastService(
 
             if (income.Date > actualDate)
             {
-                months++;
                 actualDate = income.Date;
             }
 
@@ -81,8 +79,8 @@ internal class SavingsForecastService(
         }
 
         if (currentAmount < targetAmount)
-            return (MaxMonths, forecastSteps);
+            return (DateOnly.FromDateTime(DateTime.Now.AddMonths(MaxMonths)), forecastSteps);
 
-        return (months, forecastSteps);
+        return (actualDate, forecastSteps);
     }
 }
