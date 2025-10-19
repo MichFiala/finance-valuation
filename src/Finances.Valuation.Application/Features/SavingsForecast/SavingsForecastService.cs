@@ -75,6 +75,9 @@ internal class SavingsForecastService(
                 TargetAmountDifference = targetAmount - currentAmount,
                 ContributedAmount = contributedAmount
             });
+
+            if(targetAmount - currentAmount <= 0)
+                break;
         }
 
         if (currentAmount < targetAmount)
